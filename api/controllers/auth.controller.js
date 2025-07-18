@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
-const SECRET = 'jwt_secret_key'; // cámbialo por una variable de entorno real
+const SECRET = 'clave123';
 
 exports.register = async (req, res) => {
   try {

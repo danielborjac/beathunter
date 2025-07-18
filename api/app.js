@@ -16,8 +16,8 @@ app.use('/api', gameSessionRoutes);
 sequelize.authenticate()
   .then(() => {
     console.log('📡 Conexión con base de datos exitosa.');
-    app.listen(3000, () => console.log('🚀 Servidor corriendo en http://localhost:3000'));
+    app.listen(3000, () => console.log('Servidor corriendo en http://localhost:3000'));
   })
   .catch(err => {
-    console.error('❌ Error al conectar con la base de datos:', err);
+    console.error('Error al conectar con la base de datos:', err);
   });

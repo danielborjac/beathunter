@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const SECRET = 'jwt_secret_key'; // misma clave que en login
+const SECRET = 'clave123'; 
 
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
