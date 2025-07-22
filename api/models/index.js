@@ -11,12 +11,15 @@ module.exports = {
   GameSession,
   GameAttempt
 };*/
+const sequelize = require('../config/database');
 
 const User = require('./user.model');
 const Song = require('./song.model');
 const Fragment = require('./fragment.model');
 const GameSession = require('./gameSession.model');
 const GameAttempt = require('./gameAttempt.model');
+const UserStatistic = require('./userStatistic.model');
+const LeaderboardCache = require('./leaderboardCache.model');
 
 // Relaciones principales
 User.hasMany(GameSession, { foreignKey: 'user_id' });
@@ -32,9 +35,12 @@ Song.hasMany(Fragment, { foreignKey: 'song_id' });
 Fragment.belongsTo(Song, { foreignKey: 'song_id' });
 
 module.exports = {
+  sequelize,
   User,
   Song,
   Fragment,
   GameSession,
-  GameAttempt
+  GameAttempt,
+  UserStatistic,
+  LeaderboardCache
 };

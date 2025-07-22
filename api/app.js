@@ -4,14 +4,19 @@ const sequelize = require('./config/database');
 const songRoutes = require('./routes/song.routes');
 const authRoutes = require('./routes/auth.routes');
 const gameSessionRoutes = require('./routes/gameSession.routes');
+const statisticsRoutes = require('./routes/statistics.routes');
+const leaderboardRoutes = require('./routes/leaderboard.routes');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+
 app.use('/api', songRoutes);
 app.use('/auth', authRoutes);
 app.use('/api', gameSessionRoutes);
+app.use('/api', statisticsRoutes);
+app.use('/api', leaderboardRoutes);
 
 sequelize.authenticate()
   .then(() => {

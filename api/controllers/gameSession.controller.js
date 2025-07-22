@@ -1,27 +1,5 @@
-const { GameSession, GameAttempt, Song } = require('../models');
-
-/*exports.createSessionWithAttempts = async (req, res) => {
-  try {
-    const { mode, finished_at, attempts } = req.body;
-    const user_id = req.user.id;
-
-    const session = await GameSession.create({
-      user_id,
-      mode,
-      finished_at
-    });
-
-    const createdAttempts = await Promise.all(
-      attempts.map(a =>
-        GameAttempt.create({ ...a, session_id: session.id })
-      )
-    );
-
-    res.status(201).json({ session, attempts: createdAttempts });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};*/
+const { GameSession, GameAttempt, Song, UserStatistic } = require('../models');
+const updateLeaderboardCache = require('../utils/updateLeaderboardCache');
 
 exports.createSessionWithAttempts = async (req, res) => {
   try {
@@ -29,6 +7,8 @@ exports.createSessionWithAttempts = async (req, res) => {
     const user_id = req.user.id;
 
     const session = await GameSession.create({ user_id, mode, finished_at });
+
+    let sessionTotalScore = 0;
 
     const createdAttempts = await Promise.all(
       attempts.map(async (a) => {
@@ -39,6 +19,7 @@ exports.createSessionWithAttempts = async (req, res) => {
 
         const speed_bonus = Math.max(0, 20 - (a.duration_sec || 0));
         const score = base + speed_bonus;
+        sessionTotalScore += score;
 
         return await GameAttempt.create({
           ...a,
@@ -48,7 +29,31 @@ exports.createSessionWithAttempts = async (req, res) => {
       })
     );
 
-    res.status(201).json({ session, attempts: createdAttempts });
+    // 🔄 Actualizar estadística
+    const [stats, created] = await UserStatistic.findOrCreate({
+      where: { user_id, mode },
+      defaults: {
+        total_score: sessionTotalScore,
+        games_played: 1,
+        highest_score: sessionTotalScore,
+        last_played: finished_at
+      }
+    });
+
+    if (!created) {
+      await stats.update({
+        total_score: stats.total_score + sessionTotalScore,
+        games_played: stats.games_played + 1,
+        highest_score: Math.max(stats.highest_score, sessionTotalScore),
+        last_played: finished_at
+      });
+    }
+
+    await updateLeaderboardCache('normal', 'daily');
+    await updateLeaderboardCache('normal', 'monthly');
+    await updateLeaderboardCache('normal', 'all_time');
+
+    res.status(201).json({ session, totalScore: sessionTotalScore, attempts: createdAttempts });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
