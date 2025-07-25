@@ -1,0 +1,160 @@
+.normal-game {
+  background-color: #0a0a0a;
+  color: white;
+  min-height: 100vh;
+  padding: 3rem;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.countdown {
+  font-size: 5rem;
+  animation: fadeScale 1s ease-in-out infinite;
+}
+
+@keyframes fadeScale {
+  0% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.3; transform: scale(0.8); }
+}
+
+.game-content {
+  width: 100%;
+  max-width: 600px;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.option-btn {
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #1a1a1a;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.option-btn:hover {
+  background-color: #333;
+}
+
+.option-btn.correct {
+  background-color: #32cd32;
+}
+
+.option-btn.wrong {
+  background-color: #e74c3c;
+}
+
+.feedback {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+}
+
+.feedback.success {
+  color: #32cd32;
+}
+
+.feedback.fail {
+  color: #ff5c5c;
+}
+
+.song-info {
+  margin-top: 1.5rem;
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: rgb(36, 215, 194);
+  font-family: 'Poppins', sans-serif;
+}
+
+.transition-text {
+  font-size: 2.2rem;
+  animation: fadeZoom 2s ease;
+  color: #00ffff;
+}
+
+@keyframes fadeZoom {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+
+
+
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.options button {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #333;
+  color: white;
+  transition: transform 0.2s;
+}
+
+.options button:hover {
+  transform: scale(1.05);
+}
+
+.options button.correct {
+  background-color: #00c853;
+}
+
+.options button.incorrect {
+  background-color: #d32f2f;
+}
+
+.transition {
+  font-size: 2rem;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.song-details {
+  margin: 1rem 0;
+  font-style: italic;
+  color: #ccc;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background: #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(to right, #ff8a00, #e52e71);
+  transition: width 0.1s linear;
+  border-radius: 4px;
+}

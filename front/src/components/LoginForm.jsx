@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../auth/authSlice';
 import { useNavigate } from 'react-router-dom';
+import './Form.css';
 
-export default function LoginForm() {
+export default function LoginForm({ onSuccess }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector(state => state.auth);
@@ -17,17 +18,36 @@ export default function LoginForm() {
   const handleSubmit = e => {
     e.preventDefault();
     dispatch(login(formData)).then(res => {
-      if (!res.error) navigate('/'); 
+      if (!res.error) {
+        onSuccess?.(); // Cierra modal
+        navigate('/');
+      }
     });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="auth-form" onSubmit={handleSubmit}>
       <h2>Iniciar Sesión</h2>
-      <input type="email" name="email" placeholder="Correo" onChange={handleChange} required />
-      <input type="password" name="password" placeholder="Contraseña" onChange={handleChange} required />
-      <button type="submit" disabled={loading}>Entrar</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <input
+        type="email"
+        name="email"
+        placeholder="Correo"
+        onChange={handleChange}
+        value={formData.email}
+        required
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Contraseña"
+        onChange={handleChange}
+        value={formData.password}
+        required
+      />
+      <button type="submit" disabled={loading}>
+        {loading ? 'Cargando...' : 'Entrar'}
+      </button>
+      {error && <p className="error">{error}</p>}
     </form>
   );
 }

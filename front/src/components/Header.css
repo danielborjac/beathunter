@@ -1,0 +1,33 @@
+.main-header {
+  background-color: #000;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-header .btn,
+.main-header .btn-outline {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.main-header .btn {
+  background: #ff4081;
+  border: none;
+  color: white;
+}
+
+.main-header .btn-outline {
+  background: transparent;
+  border: 2px solid #ff4081;
+  color: #ff4081;
+}
+
+.main-header .username {
+  margin-right: 1rem;
+}
