@@ -147,14 +147,15 @@ h2 {
 
 .progress-bar-container {
   width: 100%;
+  max-width: 400px;
   height: 8px;
-  background: #ddd;
+  background: #333;
   border-radius: 4px;
-  margin-bottom: 10px;
+  margin: 10px auto;
 }
 .progress-bar {
   height: 100%;
-  background: linear-gradient(to right, #ff8a00, #e52e71);
+  background: linear-gradient(to right, #00e676, #ffeb3b);
   transition: width 0.1s linear;
   border-radius: 4px;
 }

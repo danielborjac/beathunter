@@ -14,7 +14,7 @@ export default function Header() {
   const { user } = useSelector(state => state.auth);
 
   const handleLogout = () => dispatch(logout());
-
+  console.log(useSelector(state => state));
   return (
     <header className="main-header">
       <div className="logo">🎵 Beathunter</div>
