@@ -30,6 +30,7 @@ export default function HomePage() {
         <button className="mode-btn" onClick={() => { handleNormalClick('/daily')}}><FaMusic /> Modo Diario</button>
         <button className="mode-btn" onClick={() => { handleNormalClick('/normal')}}>Modo Normal</button>
         <button className="mode-btn" onClick={() => { handleNormalClick('/normal')}}>Modo Categoría</button>
+        <button className="mode-btn" onClick={() => { handleNormalClick('/leaderboard')}}>Leaderboard</button>
       </div>
 
       {showLogin && (

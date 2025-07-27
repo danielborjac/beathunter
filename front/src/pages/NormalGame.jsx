@@ -1,46 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
 import InstructionModal from '../components/InstructionModal';
 import './NormalGame.css';
-import successSfx from '/sfx/correct.mp3';
-import errorSfx from '/sfx/wrong.mp3';
-
-const mockSongs = [
-  {
-    id: 1,
-    audio: '/sfx/correct.mp3', // usa uno que exista
-    title: "Blinding Lights",
-    artist: "The Weeknd",
-    options: ["Blinding Lights", "Starboy", "Save Your Tears", "Can't Feel My Face", "After Hours", "In Your Eyes"],
-    correctAnswer: "Blinding Lights",
-    album: 'After Hours'
-  },
-  {
-    id: 2,
-    audio: '/sfx/correct.mp3',
-    title: "Shape of You",
-    artist: "Ed Sheeran",
-    options: ["Shape of You", "Perfect", "Thinking Out Loud", "Photograph", "Bad Habits", "Shivers"],
-    correctAnswer: "Shape of You",
-    album: 'Divide'
-  },
-  {
-    id: 3,
-    audio: '/sfx/correct.mp3',
-    title: "Levitating",
-    artist: "Dua Lipa",
-    options: ["Levitating", "Don't Start Now", "New Rules", "Break My Heart", "Love Again", "Physical"],
-    correctAnswer: "Levitating",
-    album: 'Future Nostalgia'
-  }
-];
-
+import { fetchRandomSongs } from '../api/songs';
+import { saveGameSession } from '../api/gameSession';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { getAudioURL, playSoundEffect, playFragment } from '../utils/gameHelpers';
 
 export default function NormalGame() {
-  const [showInstructions, setShowInstructions] = useState(true);
-  const [countdown, setCountdown] = useState(3);
+  const [songs, setSongs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentSong, setCurrentSong] = useState(mockSongs[0]);
-  const [options, setOptions] = useState([]);
   const [attempt, setAttempt] = useState(1);
   const [disabledOptions, setDisabledOptions] = useState([]);
   const [feedback, setFeedback] = useState(null);
@@ -52,113 +21,183 @@ export default function NormalGame() {
   const [failMessages] = useState([
     '¡Casi lo logras!', '¡Estuviste cerca!', '¡Buena jugada!', '¡Inténtalo otra vez!', '¡No te rindas!'
   ]);
-
+  const [countdown, setCountdown] = useState(3);
+  const [showInstructions, setShowInstructions] = useState(true);
   const [progress, setProgress] = useState(100);
-  const timerRef = useRef(null);
-  const timeoutRef = useRef(null);
+  const [timerRef, setTimerRef] = useState(null);
+  const [attemptDurations, setAttemptDurations] = useState([]);
+  const [startTime, setStartTime] = useState(null);
+  const [showSummary, setShowSummary] = useState(false);
+  const audioRef = useRef(null);
 
-  const startProgressBar = () => {
-    clearInterval(timerRef.current);
-    let percent = 100;
-    timerRef.current = setInterval(() => {
-      percent -= 1.43;
-      setProgress(percent);
-      if (percent <= 0) {
-        clearInterval(timerRef.current);
-        handleTimeout();
-      }
-    }, 100);
+  const { token } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  const fetchSongs = async () => {
+    try {
+      const songsData = await fetchRandomSongs(6);
+      setSongs(songsData);
+    } catch {
+      alert('No se pudieron cargar canciones');
+    }
   };
 
-  const handleTimeout = () => {
-    const audio = new Audio(errorSfx);
-    audio.play();
+  useEffect(() => {
+    if (!showInstructions) fetchSongs();
+  }, [showInstructions]);
 
-    timeoutRef.current = setTimeout(() => {
-      if (attempt < 3) {
-        setTransitionMessage(attempt === 1 ? 'Segundo intento...' : 'Último intento...');
-        setTimeout(() => {
-          setAttempt(prev => prev + 1);
-          setTransitionMessage('');
-          setProgress(100);
-          startProgressBar();
-        }, 2000);
-      } else {
-        setFeedback(failMessages[Math.floor(Math.random() * failMessages.length)]);
-        setShowResult(true);
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden && audioRef.current) {
+        audioRef.current.pause();
       }
-    }, 1000);
+    };
+    const handleBeforeUnload = () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!songs.length || feedback || showResult || transitionMessage) return;
+
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(prev => prev - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+
+    if (countdown === 0) {
+      const url = getAudioURL(songs[currentIndex], attempt);
+      audioRef.current = playFragment(url);
+
+      let percentage = 100;
+      const start = Date.now();
+      setStartTime(start);
+
+      const interval = setInterval(() => {
+        percentage -= 1.43;
+        setProgress(percentage);
+        if (percentage <= 0) {
+          clearInterval(interval);
+          handleTimeOut();
+        }
+      }, 100);
+      setTimerRef(interval);
+    }
+  }, [countdown, feedback, showResult, transitionMessage, songs, attempt]);
+
+  const handleTimeOut = () => {
+    if (audioRef.current) audioRef.current.pause();
+    const duration = Math.round((Date.now() - startTime) / 1000);
+
+    if (attempt < 3) {
+      setTransitionMessage(attempt === 1 ? 'Segundo intento...' : 'Último intento...');
+      setTimeout(() => {
+        setAttempt(attempt + 1);
+        setTransitionMessage('');
+        setProgress(100);
+        setCountdown(0);
+      }, 2000);
+    } else {
+      playSoundEffect(false);
+      setFeedback(failMessages[Math.floor(Math.random() * failMessages.length)]);
+      setShowResult(true);
+      setAttemptDurations(prev => [
+        ...prev,
+        {
+          song_id: songs[currentIndex].id,
+          guess_type: 'title',
+          attempts: 3,
+          duration_sec: duration
+        }
+      ]);
+    }
   };
 
-  const handleOptionClick = (option) => {
-    if (feedback || showResult || transitionMessage) return;
+  const handleOptionClick = (opt) => {
+    if (feedback || disabledOptions.includes(opt)) return;
+    clearInterval(timerRef);
+    if (audioRef.current) audioRef.current.pause();
 
-    clearInterval(timerRef.current);
-    clearTimeout(timeoutRef.current);
-
-    const isCorrect = option === currentSong.correctAnswer;
-    const audio = new Audio(isCorrect ? successSfx : errorSfx);
-    audio.play();
+    const duration = Math.round((Date.now() - startTime) / 1000);
+    const isCorrect = opt === songs[currentIndex].title;
+    playSoundEffect(isCorrect);
 
     if (isCorrect) {
       setFeedback(positiveMessages[Math.floor(Math.random() * positiveMessages.length)]);
       setShowResult(true);
+      setAttemptDurations(prev => [
+        ...prev,
+        {
+          song_id: songs[currentIndex].id,
+          guess_type: 'title',
+          attempts: attempt,
+          duration_sec: duration
+        }
+      ]);
     } else {
-      setDisabledOptions([...disabledOptions, option]);
-
-      setTimeout(() => {
-        if (attempt < 3) {
+      setDisabledOptions([...disabledOptions, opt]);
+      if (attempt < 3) {
+        setTimeout(() => {
           setTransitionMessage(attempt === 1 ? 'Segundo intento...' : 'Último intento...');
           setTimeout(() => {
-            setAttempt(prev => prev + 1);
-            setOptions(prev => prev.filter(opt => opt !== option));
+            setAttempt(attempt + 1);
             setTransitionMessage('');
             setProgress(100);
-            startProgressBar();
+            setCountdown(0);
           }, 2000);
-        } else {
-          setFeedback(failMessages[Math.floor(Math.random() * failMessages.length)]);
-          setShowResult(true);
-        }
-      }, 1000);
+        }, 1000);
+      } else {
+        setFeedback(failMessages[Math.floor(Math.random() * failMessages.length)]);
+        setShowResult(true);
+        setAttemptDurations(prev => [
+          ...prev,
+          {
+            song_id: songs[currentIndex].id,
+            guess_type: 'title',
+            attempts: 3,
+            duration_sec: duration
+          }
+        ]);
+      }
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const nextIndex = currentIndex + 1;
-    if (nextIndex >= mockSongs.length) {
-      alert('¡Juego finalizado!');
+    if (nextIndex >= songs.length) {
+      try {
+        await saveGameSession({
+          mode: 'normal',
+          finished_at: new Date().toISOString(),
+          attempts: attemptDurations
+        }, token);
+      } catch (err) {
+        console.error('Error al guardar partida:', err);
+      }
+
+      setShowSummary(true);
+      setTimeout(() => navigate('/'), 4000);
       return;
     }
 
     setCurrentIndex(nextIndex);
-    setCurrentSong(mockSongs[nextIndex]);
-    setOptions([]);
     setAttempt(1);
     setDisabledOptions([]);
     setFeedback(null);
     setShowResult(false);
-    setProgress(100);
     setCountdown(3);
+    setProgress(100);
   };
-
-  useEffect(() => {
-    if (showInstructions || countdown <= 0) return;
-
-    const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [countdown, showInstructions]);
-
-  // Cuando la cuenta llega a 0, inicia juego y música
-  useEffect(() => {
-    if (countdown === 0 && !showInstructions && !feedback && !showResult && !transitionMessage) {
-      setOptions(currentSong.options);
-      const audio = new Audio(currentSong.audio);
-      audio.play().catch(() => {});
-      setProgress(100);
-      startProgressBar();
-    }
-  }, [countdown, showInstructions, feedback, showResult, transitionMessage, currentSong]);
 
   if (showInstructions) {
     return (
@@ -170,32 +209,38 @@ export default function NormalGame() {
     );
   }
 
+  if (showSummary) {
+    return (
+      <div className="normal-game">
+        <div className="summary-screen">
+          <h2>🎉 ¡Partida Finalizada!</h2>
+          <p>Gracias por jugar. Serás redirigido al menú...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const currentSong = songs[currentIndex];
+
   return (
     <div className="normal-game">
       {countdown > 0 && <h2 className="countdown">{countdown}</h2>}
       {transitionMessage && <h3 className="transition">{transitionMessage}</h3>}
 
-      {countdown === 0 && !transitionMessage && !showResult && (
+      {countdown === 0 && !transitionMessage && (
         <>
           <h2>¿Cuál es la canción?</h2>
           <div className="progress-bar-container">
-            <div
-              className="progress-bar"
-              style={{
-                width: `${progress}%`,
-                backgroundColor: progress > 50 ? '#4caf50' : progress > 20 ? '#ffc107' : '#f44336'
-              }}
-            ></div>
+            <div className="progress-bar" style={{ width: `${progress}%` }}></div>
           </div>
-
           <div className="options">
-            {options.map((opt) => (
+            {currentSong.options.map((opt) => (
               <button
                 key={opt}
                 onClick={() => handleOptionClick(opt)}
-                disabled={disabledOptions.includes(opt) || showResult || feedback || transitionMessage}
+                disabled={feedback || disabledOptions.includes(opt)}
                 className={
-                  showResult && opt === currentSong.correctAnswer
+                  feedback && opt === currentSong.title
                     ? 'correct'
                     : disabledOptions.includes(opt)
                     ? 'incorrect'
@@ -209,7 +254,7 @@ export default function NormalGame() {
         </>
       )}
 
-      {feedback && showResult && (
+      {feedback && (
         <div className="feedback">
           <p>{feedback}</p>
           <div className="song-details">

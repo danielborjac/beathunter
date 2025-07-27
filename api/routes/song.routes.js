@@ -5,5 +5,6 @@ const authMiddleware = require('../middlewares/auth.middleware');
 
 router.get('/songs', authMiddleware, songController.getAllSongs);
 router.get('/songs/:id/fragments', authMiddleware, songController.getFragmentsBySongId);
+router.get('/random', songController.getRandomSongs);
 
 module.exports = router;

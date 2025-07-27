@@ -7,8 +7,11 @@ import PrivateRoute from './components/PrivateRoute';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import NormalGame from './pages/NormalGame';
+import LeaderboardPage from './pages/LeaderboardPage';
+
 
 function App() {
+
   return (
       <Router>
         <Header />
@@ -22,6 +25,7 @@ function App() {
               <DashboardPage />
             </PrivateRoute>
           } />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
         </Routes>
         <Footer />
       </Router>

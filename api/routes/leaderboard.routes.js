@@ -5,6 +5,6 @@ const auth = require('../middlewares/auth.middleware');
 const leaderboardController = require('../controllers/leaderboard.controller');
 
 router.get('/leaderboard', leaderboardController.getLeaderboard);
-router.get('/cache', auth, leaderboardController.getCachedLeaderboard);
+router.get('/cache', leaderboardController.getCachedLeaderboard);
 
 module.exports = router;

@@ -17,6 +17,7 @@ app.use('/api', authRoutes);
 app.use('/api', gameSessionRoutes);
 app.use('/api', statisticsRoutes);
 app.use('/api', leaderboardRoutes);
+app.use('/api/songs', songRoutes);
 
 sequelize.authenticate()
   .then(() => {

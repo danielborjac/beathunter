@@ -159,3 +159,14 @@ h2 {
   transition: width 0.1s linear;
   border-radius: 4px;
 }
+
+.summary-screen {
+  text-align: center;
+  margin-top: 100px;
+  animation: fadein 1s ease-in-out;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
