@@ -1,0 +1,8 @@
+.transition {
+  font-size: 2rem;
+  animation: fadeInOut 2s ease-in-out;
+  color: #00ffff;
+  margin-bottom: 2rem;
+  font-weight: bold;
+  font-family: 'Poppins';
+}

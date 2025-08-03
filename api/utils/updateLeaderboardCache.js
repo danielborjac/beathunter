@@ -24,34 +24,28 @@ async function updateLeaderboardCache(mode, time_range, limit = 10) {
 
   const query = `
     SELECT
-      t.user_id,
+      gs.user_id,
       u.username,
-      MAX(t.session_score) AS highest_score
-    FROM (
-      SELECT
-        gs.user_id,
-        ga.session_id,
-        SUM(ga.score) AS session_score
-      FROM game_sessions gs
-      JOIN game_attempts ga ON gs.id = ga.session_id
-      WHERE gs.mode = :mode ${whereDate}
-      GROUP BY ga.session_id, gs.user_id
-    ) AS t
-    JOIN users u ON t.user_id = u.id
-    GROUP BY t.user_id, u.username
-    ORDER BY highest_score DESC
+      gs.id AS session_id,
+      SUM(ga.score) AS score
+    FROM game_sessions gs
+    JOIN users u ON u.id = gs.user_id
+    JOIN game_attempts ga ON ga.session_id = gs.id
+    WHERE gs.mode = :mode ${whereDate}
+    GROUP BY gs.id, gs.user_id, u.username
+    ORDER BY score DESC
     LIMIT :limit;
   `;
 
   const results = await sequelize.query(query, {
-    replacements: { mode, limit },
+    replacements: { mode, limit: 15 },
     type: sequelize.QueryTypes.SELECT
   });
 
   const cacheData = results.map(row => ({
     user_id: row.user_id,
     username: row.username,
-    highest_score: Number(row.highest_score)
+    score: Number(row.score)
   }));
 
   const { LeaderboardCache } = require('../models');

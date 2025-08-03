@@ -1,5 +1,5 @@
 .main-header {
-  background-color: #000;
+  background-color: #0e1529;
   color: white;
   padding: 1rem 2rem;
   display: flex;
@@ -30,6 +30,7 @@
 
 .main-header .username {
   margin-right: 1rem;
+  font-family: sans-serif;
 }
 
 .main-header .logo img{

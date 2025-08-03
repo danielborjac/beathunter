@@ -54,7 +54,7 @@ export default function LeaderboardPage() {
             <li key={index} className="entry">
             <span className="position">#{index + 1}</span>
             <span className="username">{entry.username}</span>
-            <span className="score">🎯 {entry.highest_score}</span>
+            <span className="score">🎯 {entry.score}</span>
             </li>
         ))}
         </ul>

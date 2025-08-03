@@ -1,0 +1,44 @@
+.summary-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.summary-buttons button {
+  background-color: #1db954;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-size: 1.3rem;
+}
+
+.summary-buttons button:hover {
+  background-color: #17a444;
+}
+
+.summary-screen {
+  text-align: center;
+  margin-top: 100px;
+  animation: fadein 1s ease-in-out;
+}
+
+.summary-screen p{
+  font-size: 1.5rem;
+}
+
+.summary-screen h2{
+  font-size: 2.2rem;
+}
+
+.pixel-font {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.7rem;
+  color: #ffcc00;
+  text-shadow: 1px 1px 2px #000;
+  margin: 10px 0;
+}

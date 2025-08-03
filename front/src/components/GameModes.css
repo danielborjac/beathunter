@@ -1,0 +1,64 @@
+.game-modes-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+.mode-card {
+  background: linear-gradient(145deg, #1a1a2e, #16213e);
+  color: white;
+  border: 2px solid #ff2e63;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255, 46, 99, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mode-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(255, 46, 99, 0.6);
+}
+
+.mode-card h3 {
+  margin-top: 0.8rem;
+  font-size: 1.4rem;
+}
+
+.mode-card p {
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+  color: #ccc;
+}
+
+.mode-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.mode-card.normal {
+  flex: 1 1 250px;
+  max-width: 300px;
+  min-height: 150px;
+}
+
+.mode-card.large {
+  flex: 1 1 100%;
+  max-width: 620px;
+  min-height: 150px;
+}
+
+@media (max-width: 768px) {
+  .mode-card.normal {
+    flex: 50%;
+    max-width: 100%;
+  }
+   .mode-card.large {
+    flex: 2 2 1000%;
+    max-width: 100%;
+   }
+}

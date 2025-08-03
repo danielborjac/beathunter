@@ -10,10 +10,7 @@
   flex-direction: column;
 }
 
-.countdown {
-  font-size: 5rem;
-  animation: fadeScale 1s ease-in-out infinite;
-}
+
 
 @keyframes fadeScale {
   0% { opacity: 0.3; transform: scale(0.8); }
@@ -78,13 +75,7 @@ h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
   color: rgb(36, 215, 194);
-  font-family: 'Poppins', sans-serif;
-}
-
-.transition-text {
-  font-size: 2.2rem;
-  animation: fadeZoom 2s ease;
-  color: #00ffff;
+  font-family: 'Poppins';
 }
 
 @keyframes fadeZoom {
@@ -92,8 +83,6 @@ h2 {
   50% { opacity: 1; transform: scale(1.1); }
   100% { opacity: 0; transform: scale(1.4); }
 }
-
-
 
 
 .options {
@@ -127,10 +116,7 @@ h2 {
   background-color: #d32f2f;
 }
 
-.transition {
-  font-size: 2rem;
-  animation: fadeInOut 2s ease-in-out;
-}
+
 
 @keyframes fadeInOut {
   0% { opacity: 0; }
@@ -145,28 +131,24 @@ h2 {
   color: #ccc;
 }
 
-.progress-bar-container {
-  width: 100%;
-  max-width: 400px;
-  height: 8px;
-  background: #333;
-  border-radius: 4px;
-  margin: 10px auto;
-}
-.progress-bar {
-  height: 100%;
-  background: linear-gradient(to right, #00e676, #ffeb3b);
-  transition: width 0.1s linear;
-  border-radius: 4px;
-}
-
-.summary-screen {
-  text-align: center;
-  margin-top: 100px;
-  animation: fadein 1s ease-in-out;
-}
-
 @keyframes fadein {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+.next-btn {
+  background-color: #1db954;
+  border: none;
+  padding: 12px 24px;
+  margin-top: 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.next-btn:hover {
+  background-color: #17a444;
 }

@@ -1,0 +1,26 @@
+.score-transition-container {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: #0a0a0a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.score-transition-heading {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-weight: bold;
+}
+
+.score-transition-score {
+  font-size: 3rem;
+  color: #FFD700; /* amarillo */
+  font-family: 'Press Start 2P', monospace;
+  letter-spacing: 1px;
+}

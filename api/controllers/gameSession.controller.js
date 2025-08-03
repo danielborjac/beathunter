@@ -13,11 +13,12 @@ exports.createSessionWithAttempts = async (req, res) => {
     const createdAttempts = await Promise.all(
       attempts.map(async (a) => {
         let base = 0;
-        if (a.attempts === 1) base = 100;
+        if (!a.correct) base = 0;      
+        else if (a.attempts === 1) base = 100;
         else if (a.attempts === 2) base = 70;
         else if (a.attempts === 3) base = 40;
-
-        const speed_bonus = Math.max(0, 20 - (a.duration_sec || 0));
+ 
+        const speed_bonus = a.correct ? Math.max(0 - (a.duration_sec || 0)) : 0;
         const score = base + speed_bonus;
         sessionTotalScore += score;
 

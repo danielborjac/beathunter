@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth.routes');
 const gameSessionRoutes = require('./routes/gameSession.routes');
 const statisticsRoutes = require('./routes/statistics.routes');
 const leaderboardRoutes = require('./routes/leaderboard.routes');
+const videosRoutes = require('./routes/videos.routes');
 
 const app = express();
 app.use(cors());
@@ -18,6 +19,7 @@ app.use('/api', gameSessionRoutes);
 app.use('/api', statisticsRoutes);
 app.use('/api', leaderboardRoutes);
 app.use('/api/songs', songRoutes);
+app.use('/api/videos', videosRoutes);
 
 sequelize.authenticate()
   .then(() => {

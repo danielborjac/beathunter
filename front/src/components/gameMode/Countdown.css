@@ -1,0 +1,4 @@
+.countdown {
+  font-size: 12rem;
+  animation: fadeScale 1s ease-in-out infinite;
+}

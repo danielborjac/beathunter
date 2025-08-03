@@ -1,44 +1,36 @@
 import './HomePage.css';
-import { useNavigate } from 'react-router-dom';
-import playClickSound from '../utils/playClickSound';
-import { FaMusic, FaGamepad } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
-import LoginForm from '../components/LoginForm';
-import { useState } from 'react';
-import Modal from '../components/modal';
+import GameModes from '../components/GameModes';
+import BackgroundVideo from '../components/BackgroundVideo';
+import { useState, useEffect } from 'react';
 
 export default function HomePage() {
-  const { token } = useSelector(state => state.auth);
-  const [showLogin, setShowLogin] = useState(false);
 
-  const navigate = useNavigate();
+  const [isVideoReady, setIsVideoReady] = useState(false);
+  const [isContentReady, setIsContentReady] = useState(false);
 
-  const handleNormalClick= (route) => {
-    playClickSound();
-    if (!token) {
-      setShowLogin(true);
-    } else {
-      navigate(route);
-    }
-  };
+  useEffect(() => {
+    // Simula el contenido renderizado (puedes optimizar según tu lógica real)
+    const timeout = setTimeout(() => setIsContentReady(true), 500);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  const isLoading = !isVideoReady || !isContentReady;
+
 
   return (
-    <div className="home-container">
-      <h1 className="home-title">🎵 ¡Bienvenido a Beathunter!</h1>
-      <p className="home-subtitle">¿Cuántas canciones puedes adivinar?</p>
-      <div className="mode-buttons">
-        <button className="mode-btn" onClick={() => { handleNormalClick('/daily')}}><FaMusic /> Modo Diario</button>
-        <button className="mode-btn" onClick={() => { handleNormalClick('/normal')}}>Modo Normal</button>
-        <button className="mode-btn" onClick={() => { handleNormalClick('/normal')}}>Modo Categoría</button>
-        <button className="mode-btn" onClick={() => { handleNormalClick('/leaderboard')}}>Leaderboard</button>
+    <>
+      <div className="home-container">
+
+        {isLoading && (
+          <div className="loader-overlay">
+            <div className="spinner" />
+          </div>
+        )}
+        
+        <BackgroundVideo onReady={() => setIsVideoReady(true)} />
+        <h1 className="home-title">	Que empiece el desafío musical!</h1>
+        <GameModes/>
       </div>
-
-      {showLogin && (
-        <Modal show={showLogin} onClose={() => setShowLogin(false)}>
-          <LoginForm onSuccess={() => setShowLogin(false)} />
-        </Modal>
-      )}
-
-    </div>
+    </>
   );
 }
