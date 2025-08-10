@@ -4,7 +4,7 @@ const sequelize = require('../config/database');
 (async () => {
   try {
     await sequelize.authenticate();
-    const modes = ['normal', 'daily', 'category'];
+    const modes = ['random', 'daily', 'classic'];
     const ranges = ['daily', 'monthly', 'all_time'];
 
     for (const mode of modes) {

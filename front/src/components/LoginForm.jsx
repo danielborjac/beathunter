@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../auth/authSlice';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import './Form.css';
 
 export default function LoginForm({ onSuccess }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const { loading, error } = useSelector(state => state.auth);
 
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -20,7 +20,7 @@ export default function LoginForm({ onSuccess }) {
     dispatch(login(formData)).then(res => {
       if (!res.error) {
         onSuccess?.(); // Cierra modal
-        navigate('/');
+        //navigate('/');
       }
     });
   };

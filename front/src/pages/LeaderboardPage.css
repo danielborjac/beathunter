@@ -2,7 +2,7 @@
   padding: 2rem;
   text-align: center;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #1a1a2e, #16213e);
+  background: radial-gradient(circle at top left, #0b0b0c, #15191e, #222137);
   color: white;
   font-family: 'Poppins', sans-serif;
   animation: fadeIn 0.8s ease-in;
@@ -68,7 +68,7 @@
 }
 
 .score {
-  color: #00ffab;
+  color: #ffcc00;
 }
 
 /* Animaciones */

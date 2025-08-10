@@ -1,16 +1,14 @@
 .normal-game {
-  background-color: #0a0a0a;
+  background: #0e0d16e9;
   color: white;
   min-height: 100vh;
   padding: 3rem;
   text-align: center;
   display: flex;
-  justify-content: center;
+  padding-top: 80px;
   align-items: center;
   flex-direction: column;
 }
-
-
 
 @keyframes fadeScale {
   0% { opacity: 0.3; transform: scale(0.8); }
@@ -23,58 +21,23 @@
   max-width: 600px;
 }
 
-.options-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1rem;
-  margin: 2rem 0;
-}
-
-.option-btn {
-  padding: 1rem;
-  border: none;
-  border-radius: 8px;
-  background-color: #1a1a1a;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
 
 .option-btn:hover {
-  background-color: #333;
+  background-color: #2a3554;
 }
 
 .option-btn.correct {
-  background-color: #32cd32;
+  background-color: #08916f;
 }
 
 .option-btn.wrong {
-  background-color: #e74c3c;
-}
-
-.feedback {
-  font-size: 1.5rem;
-  margin-top: 1rem;
-}
-
-.feedback.success {
-  color: #32cd32;
-}
-
-.feedback.fail {
-  color: #ff5c5c;
-}
-
-.song-info {
-  margin-top: 1.5rem;
-  font-size: 1.2rem;
-  color: #ccc;
+  background-color: #521313;
 }
 
 h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
-  color: rgb(36, 215, 194);
+  color: white;
   font-family: 'Poppins';
 }
 
@@ -86,11 +49,12 @@ h2 {
 
 
 .options {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   justify-content: center;
   gap: 1rem;
   margin: 2rem 0;
+  max-width: 70%;
 }
 
 .options button {
@@ -99,9 +63,10 @@ h2 {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  background-color: #333;
+  background-color: #1a153d;
   color: white;
   transition: transform 0.2s;
+  min-height: 70px;
 }
 
 .options button:hover {
@@ -109,11 +74,11 @@ h2 {
 }
 
 .options button.correct {
-  background-color: #00c853;
+  background-color: #08916f;
 }
 
 .options button.incorrect {
-  background-color: #d32f2f;
+  background-color: #521313;
 }
 
 
@@ -136,19 +101,25 @@ h2 {
   to { opacity: 1; }
 }
 
-.next-btn {
-  background-color: #1db954;
-  border: none;
-  padding: 12px 24px;
-  margin-top: 20px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
-  transition: background 0.3s;
+#bg-video{
+  object-fit: cover;
+  width: 100vw;
+  height: 100vh; position: fixed;
+  top: 0; left: 0;
+  z-index: -1;
 }
 
-.next-btn:hover {
-  background-color: #17a444;
+@media (max-width: 768px) {
+  .normal-game {
+    padding-top: 20px;
+  }
+  .options {
+    grid-template-columns: 1fr 1fr;
+    max-width: 100%;
+  }
+
+  .options button {
+    min-height: 70px;
+    font-size: 0.85rem;
+  }
 }

@@ -3,7 +3,7 @@ import { fetchLeaderboard } from '../api/leaderboard';
 import './LeaderboardPage.css';
 
 export default function LeaderboardPage() {
-  const [mode, setMode] = useState('normal');
+  const [mode, setMode] = useState('classic');
   const [timeRange, setTimeRange] = useState('daily');
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,9 +34,9 @@ export default function LeaderboardPage() {
 
       <div className="filters">
         <select value={mode} onChange={e => setMode(e.target.value)}>
-          <option value="normal">Normal</option>
+          <option value="random">Aleatorio</option>
           <option value="daily">Diario</option>
-          <option value="category">Por Categoría</option>
+          <option value="classic">Clásico</option>
         </select>
         <select value={timeRange} onChange={e => setTimeRange(e.target.value)}>
           <option value="daily">Hoy</option>

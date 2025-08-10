@@ -9,7 +9,7 @@
   margin-bottom: 1rem;
   font-size: 1.8rem;
   text-align: center;
-  color: #ff4081;
+  color: #722565;
 }
 
 .auth-form input {
@@ -26,7 +26,7 @@
 }
 
 .auth-form button {
-  background: #ff4081;
+  background: #612257;
   color: white;
   padding: 0.75rem;
   border: none;

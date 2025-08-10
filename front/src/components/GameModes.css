@@ -8,9 +8,9 @@
 }
 
 .mode-card {
-  background: linear-gradient(145deg, #1a1a2e, #16213e);
+  background: linear-gradient(145deg, #1a1a2e, #391539);
   color: white;
-  border: 2px solid #ff2e63;
+  border: 2px solid #612257;
   border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
@@ -56,9 +56,33 @@
   .mode-card.normal {
     flex: 50%;
     max-width: 100%;
+    max-height: 100px;
   }
-   .mode-card.large {
+  .mode-card.large {
     flex: 2 2 1000%;
     max-width: 100%;
+    max-height: 100px;
    }
+
+  .mode-card h3 {
+    font-size: 1.2rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .mode-card p {
+    font-size: 1rem;
+    margin-top: 0.1rem;
+  }
+
+  .mode-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .game-modes-container {
+    margin-top: 0.1rem;
+    padding: 1rem;
+  }
+
 }

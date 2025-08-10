@@ -11,7 +11,7 @@ const UserStatistic = sequelize.define('UserStatistic', {
     }
   },
   mode: {
-    type: DataTypes.ENUM('normal', 'daily', 'category')
+    type: DataTypes.ENUM('random', 'daily', 'classic')
   },
   total_score: DataTypes.INTEGER,
   games_played: DataTypes.INTEGER,

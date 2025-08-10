@@ -3,7 +3,7 @@ const sequelize = require('../config/database');
 
 const LeaderboardCache = sequelize.define('LeaderboardCache', {
   mode: {
-    type: DataTypes.ENUM('normal', 'daily', 'category')
+    type: DataTypes.ENUM('random', 'daily', 'classic')
   },
   time_range: {
     type: DataTypes.ENUM('daily', 'monthly', 'all_time')

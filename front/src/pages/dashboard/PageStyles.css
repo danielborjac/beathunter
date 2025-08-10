@@ -1,0 +1,18 @@
+.page-container {
+  margin-left: 240px;
+  padding: 30px;
+  background-color: #f1f5f9;
+  min-height: 100vh;
+}
+
+.page-container h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+.dashboard-cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}

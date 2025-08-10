@@ -1,0 +1,161 @@
+.categories-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-width: 30%;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tabs button {
+  background: #eee;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.tabs button.active,
+.tabs button:hover {
+  background: #612257;
+  color: white;
+}
+
+.form-container {
+  border: 1px solid #ddd;
+  padding: 15px 20px;
+  border-radius: 6px;
+  margin-bottom: 30px;
+  background: #fafafa;
+}
+
+.categories-list h2 {
+  margin-bottom: 10px;
+  text-align: center;
+  color: black;
+  font-size: 1.7rem;
+}
+
+.categories-list table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  border-radius: 10px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.categories-list th,
+.categories-list td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.categories-list th {
+  background-color: #f3f4f6;
+}
+
+.cat-image {
+  max-width: 50px;
+  max-height: 50px;
+  object-fit: contain;
+}
+
+/* Contenedor responsive para tablas */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Evitar que las columnas se rompan en móvil */
+.table-responsive table {
+  min-width: 600px; /* Ajusta según cantidad de columnas */
+  border-collapse: collapse;
+}
+
+.table-responsive th,
+.table-responsive td {
+  white-space: nowrap;
+  padding: 8px;
+}
+
+.users-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.users-form label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.users-form input,
+.users-form select {
+  padding: 8px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 5px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.form-container {
+  border: 1px solid #ddd;
+  padding: 15px 20px;
+  border-radius: 6px;
+  margin-bottom: 30px;
+  background: #fafafa;
+}
+
+.form-actions button {
+  background-color: #612257;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Estilo opcional para pantallas pequeñas */
+@media screen and (max-width: 768px) {
+  .table-responsive {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+}

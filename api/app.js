@@ -7,6 +7,10 @@ const gameSessionRoutes = require('./routes/gameSession.routes');
 const statisticsRoutes = require('./routes/statistics.routes');
 const leaderboardRoutes = require('./routes/leaderboard.routes');
 const videosRoutes = require('./routes/videos.routes');
+const deezerRoutes = require('./routes/deezer.routes');
+const categoryRoutes = require('./routes/category.routes');
+const deezerSearchRoutes = require('./routes/deezerSearch.routes');
+const dashboardRoutes = require('./routes/dashboard.routes');
 
 const app = express();
 app.use(cors());
@@ -18,8 +22,14 @@ app.use('/api', authRoutes);
 app.use('/api', gameSessionRoutes);
 app.use('/api', statisticsRoutes);
 app.use('/api', leaderboardRoutes);
+app.use('/api', categoryRoutes);
+app.use('/api/deezer', deezerRoutes);
 app.use('/api/songs', songRoutes);
 app.use('/api/videos', videosRoutes);
+//dashboard
+app.use('/api/dashboard', deezerSearchRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+
 
 sequelize.authenticate()
   .then(() => {

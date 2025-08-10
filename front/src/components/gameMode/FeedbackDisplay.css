@@ -1,0 +1,140 @@
+.feedback {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  font-weight: bold;
+  font-family: 'Poppins';
+}
+
+.song-card {
+  display: flex;
+  background: linear-gradient(145deg, #1a1a2e, #391539);
+
+  
+  color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 570px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-family: sans-serif;
+  font-size: 1em;
+}
+
+/* 1/4 columna izquierda */
+.album-section {
+  width: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.album-cover {
+  width: 80%;
+  height: auto;
+  max-height: 90%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* 3/4 columna derecha */
+.song-info {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  width: 70%;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.song-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.song-artist {
+  margin: 4px 0;
+  font-size: 1rem;
+  color: #ccc;
+  text-align: left;
+}
+
+.song-album {
+  font-size: 0.6em;
+  font-style: italic;
+  color: #999;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.audio-player {
+  margin-top: 8px;
+  width: 80%;
+  height: 33px;
+}
+
+@media (max-width: 500px) {
+  .album-section {
+    width: 40%;
+  }
+  .song-card {
+    font-size: 0.75em;
+  }
+  .song-album{
+    display: none;
+  }
+
+}
+
+/* Diseño progreso*/
+
+.next-btn {
+  background-color: #1a153d;
+  border: none;
+  padding: 12px 24px;
+  margin-top: 2rem;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 100%;
+}
+
+.next-btn:hover {
+  background-color: #612257;
+}
+
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.dot.success {
+  background-color: #08e4a6;
+}
+
+.dot.fail {
+  background-color: #741717;
+}
+
+.dot.pending {
+  background-color: #1a153d;
+}

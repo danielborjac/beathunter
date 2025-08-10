@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background-color: #0a0a0a;
+  background: #0e0d16;
   color: white;
   display: flex;
   flex-direction: column;
@@ -23,4 +23,10 @@
   color: #FFD700; /* amarillo */
   font-family: 'Press Start 2P', monospace;
   letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+  .score-transition-score {
+    font-size: 1.6rem;
+  }
 }

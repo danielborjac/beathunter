@@ -5,9 +5,9 @@ export default function InstructionModal({ mode, onClose, onStart }) {
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
   const messages = {
-    normal: 'Adivina la canción correcta. Tienes 3 intentos y 6 opciones. Cada error reduce una opción.',
-    daily: 'Modo diario: un intento al día. ¡Hazlo contar!',
-    category: 'Adivina canciones de una categoría específica. ¡Demuestra tu conocimiento!'
+    random: 'Tienes 3 intentos por canciones y cada error te permitirá escuchar un fragmento de mayor duración ¡Trata de adivinar las 6 canciones con la menor cantidad de errores!',
+    daily: 'Tienes 3 intentos por canciones y cada error te permitirá escuchar un fragmento de mayor duración ¡Solo tendrás una oportunidad de adivinar 3 canciones por día!',
+    classic: 'Tienes 3 intentos por canciones y cada error te permitirá escuchar un fragmento de mayor duración ¡Trata de adivinar las 6 canciones con la menor cantidad de errores!'
   };
 
   const handleStart = () => {
@@ -36,7 +36,7 @@ export default function InstructionModal({ mode, onClose, onStart }) {
         </label>
 
         <button onClick={handleStart}>¡Comenzar!</button>
-        <button className="close" onClick={onClose}>Cerrar</button>
+        <button className="close" onClick={onClose}>Atras</button>
       </div>
     </div>
   );

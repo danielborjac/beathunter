@@ -50,9 +50,9 @@ exports.createSessionWithAttempts = async (req, res) => {
       });
     }
 
-    await updateLeaderboardCache('normal', 'daily');
-    await updateLeaderboardCache('normal', 'monthly');
-    await updateLeaderboardCache('normal', 'all_time');
+    await updateLeaderboardCache(mode, 'daily');
+    await updateLeaderboardCache(mode, 'monthly');
+    await updateLeaderboardCache(mode, 'all_time');
 
     res.status(201).json({ session, totalScore: sessionTotalScore, attempts: createdAttempts });
   } catch (err) {

@@ -3,7 +3,7 @@ import errorSfx from '/sfx/wrong.mp3';
 
 export const getAudioURL = (song, attempt) => {
   const audioObj = song.audio.find((a) => a.level === attempt);
-  return audioObj?.url || '/sfx/example.mp3';
+  return audioObj?.url;
 };
 
 export const playSoundEffect = (isCorrect) => {

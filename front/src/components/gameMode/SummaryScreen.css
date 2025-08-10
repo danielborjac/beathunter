@@ -6,8 +6,8 @@
 }
 
 .summary-buttons button {
-  background-color: #1db954;
-  border: none;
+  background-color: #131d34;
+  border: 2px solid #ff2e63;
   padding: 12px 20px;
   border-radius: 8px;
   color: white;
@@ -18,7 +18,7 @@
 }
 
 .summary-buttons button:hover {
-  background-color: #17a444;
+  background-color: #1a2648;
 }
 
 .summary-screen {

@@ -80,6 +80,7 @@ export default function BackgroundVideo({ onReady }) {
       setTimeout(() => {
         const nextIndex = (currentVideoIndex + 1) % videoIds.length;
         setCurrentVideoIndex(nextIndex);
+        console.log(playerRef);
         playerRef.current?.loadVideoById(videoIds[nextIndex]);
         setFadeState('fade-in');
       }, 1000);

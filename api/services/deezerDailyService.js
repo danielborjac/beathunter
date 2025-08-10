@@ -1,0 +1,77 @@
+const axios = require('axios');
+const { sanitizeTitle, shuffleArray } = require('../utils/deezerCategoryUtils');
+const DailySongs = require('../models/dailySong.model');
+
+
+const getDailySongs = async () => {
+  const today = new Date().toISOString().split('T')[0];
+  const todayString = today.toString()
+
+  try {
+    const dailyRecord = await DailySongs.findOne({ where: { date_release: todayString } });
+
+    if (!dailyRecord || !dailyRecord.songs_id) {
+      throw new Error('No hay canciones disponibles para hoy');
+    }
+
+    const songIds = dailyRecord.songs_id; 
+    const songs = [];
+
+    for (const songId of songIds) {
+      const { data: track } = await axios.get(`https://api.deezer.com/track/${songId}`);
+
+      // Obtener opciones externas (sin usar el mismo pool)
+      const options = await getExternalTitleOptions(track);
+
+      songs.push({
+        title: sanitizeTitle(track.title),
+        song_id:track.artist.id,
+        artist: track.artist.name,
+        album: track.album.title,
+        options: options,
+        audio: track.preview,
+        album_img: track.album.cover_medium
+      });
+    }
+
+    return songs;
+
+  } catch (error) {
+    throw new Error('Error obteniendo canciones diarias: ' + error.message);
+  }
+};
+
+async function getExternalTitleOptions(originalTrack) {
+  try {
+    const artistId = originalTrack?.artist?.id;
+    const originalTitle = originalTrack?.title;
+
+    if (!artistId || !originalTitle) {
+      throw new Error("Faltan datos del artista o título original.");
+    }
+
+    const { data } = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=20`);
+    const topTracks = data?.data || [];
+
+    // Filtrar para eliminar la canción original y evitar duplicados por título
+    const filtered = topTracks.filter(
+      (track) => track.title !== originalTitle
+    );
+
+    // Mezclar aleatoriamente
+    const shuffled = filtered.sort(() => Math.random() - 0.5);
+
+    // Tomar hasta 5 títulos distintos
+    const options = shuffled.slice(0, 5).map((track) => sanitizeTitle(track.title));
+
+    // Añadir la correcta y mezclar todo
+    const allOptions = [...options, sanitizeTitle(originalTitle)].sort(() => Math.random() - 0.5);
+
+    return allOptions;
+  } catch (error) {
+    console.error("Error generando opciones:", error.message);
+    return []; // En caso de error, devuelve lista vacía o maneja como desees
+  }
+}
+
+module.exports = getDailySongs;

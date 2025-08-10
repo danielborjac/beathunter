@@ -1,8 +1,16 @@
 .transition {
   font-size: 2rem;
   animation: fadeInOut 2s ease-in-out;
-  color: #00ffff;
+  color: white;
   margin-bottom: 2rem;
   font-weight: bold;
   font-family: 'Poppins';
+  min-height: 100vh;
+  padding-top: 200px;
+}
+
+@media (max-width: 768px){
+  .transition {
+    padding-top: 220px;
+  }
 }

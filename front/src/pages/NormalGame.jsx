@@ -1,3 +1,5 @@
+import FullScreenLoader from '../components/FullScreenLoader';
+import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import InstructionModal from '../components/InstructionModal';
 import Countdown from '../components/gameMode/Countdown';
@@ -8,16 +10,25 @@ import FeedbackDisplay from '../components/gameMode/FeedbackDisplay';
 import SummaryScreen from '../components/gameMode/SummaryScreen';
 import ScoreTransition from '../components/gameMode/ScoreTransition';
 
-import useAudioFragment from '../hooks/useAudioFragment';
+//import useAudioFragment from '../hooks/useAudioFragment';
+import useDeezerAudioFragment from '../hooks/useDeezerAudioFragment';
 import useGameTimer from '../hooks/useGameTimer';
 
 import './NormalGame.css';
-import { fetchRandomSongs } from '../api/songs';
+//import { fetchRandomSongs } from '../api/songs';
+import { fetchDeezerRandomSongs, fetchDeezerDailySongs } from '../api/deezer';
 import { saveGameSession } from '../api/gameSession';
 import { useSelector } from 'react-redux';
-import { getAudioURL, playSoundEffect } from '../utils/gameHelpers';
+import { playSoundEffect } from '../utils/gameHelpers';
+import { prepareDeezerSongs } from "../utils/deezerGameHelper";
+import { useRef } from 'react';
 
 export default function NormalGame() {
+
+  const location = useLocation();
+  const { state } = location;
+  const [loading, setLoading] = useState(true);
+
   const [songs, setSongs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [attempt, setAttempt] = useState(1);
@@ -41,27 +52,42 @@ export default function NormalGame() {
   const [lastScore, setLastScore] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [wasCorrect, setWasCorrect] = useState(false);
+  const [results, setResults] = useState([]);
 
   const { token } = useSelector((state) => state.auth);
-  const { play, pause } = useAudioFragment();
+  //const { play, pause } = useAudioFragment();
+  const { play, pause } = useDeezerAudioFragment();
+
   const { start: startTimer, clear: clearTimer } = useGameTimer();
 
   const fetchSongs = async () => {
+    setLoading(true); // Muestra el loader
     try {
-      const songsData = await fetchRandomSongs(6);
-      setSongs(songsData);
-    } catch {
-      alert('No se pudieron cargar canciones');
+      let rawSongs;
+      if(state.mode == "daily") rawSongs = await fetchDeezerDailySongs();
+      else rawSongs = await fetchDeezerRandomSongs(state);
+
+      const preparedSongs = prepareDeezerSongs(rawSongs);
+      setSongs(preparedSongs);
+    } catch (error) {
+      console.error(error);
+      alert('Error al cargar canciones');
+      window.Location.href="/"
+    } finally {
+      setLoading(false); // Oculta el loader
     }
   };
 
+  const videoRef = useRef(null);
+  
+
   useEffect(() => {
     const hidden = JSON.parse(localStorage.getItem('hideInstructions') || '{}');
-    if (!hidden.normal) {
-      setShowInstructions(true);
-    } else {
-      fetchSongs();
-    }
+    if(state == null) window.location.href="/"
+    if (hidden.random && state.mode == "random") fetchSongs(); 
+    else if (hidden.classic && state.mode == "classic") fetchSongs(); 
+    else if (hidden.daily && state.mode == "daily") fetchSongs();  
+    else setShowInstructions(true);
   }, []);
 
   const handleStartInstructions = () => {
@@ -86,10 +112,26 @@ export default function NormalGame() {
     }
 
     if (countdown === 0) {
-      const url = getAudioURL(songs[currentIndex], attempt);
-      play(url);
       const start = Date.now();
       setStartTime(start);
+
+      // reproducimos el audio
+      if (songs[currentIndex]?.audio) {
+        console.log(songs);
+        play(songs[currentIndex].audio, attempt - 1).then(() => {
+          if (videoRef.current) {
+            videoRef.current.currentTime = 0;
+            videoRef.current.play().catch(err => {
+              console.warn("Video no pudo reproducirse:", err);
+            });
+          }
+        })
+        .catch((err) => {
+          console.error("Error al reproducir el audio:", err);
+          alert("Ha ocurrido un error inesperado, volverás a la página principal");
+          window.location.href = '/'
+        });
+      }
 
       startTimer(
         (elapsed) => {
@@ -101,10 +143,12 @@ export default function NormalGame() {
         7000
       );
     }
+
   }, [countdown, feedback, showResult, transitionMessage, showScoreTransition, songs, attempt, showInstructions]);
 
   const handleTimeOut = (start) => {
     pause();
+    
     const duration = Math.round((Date.now() - start) / 1000);
 
     if (attempt < 3) {
@@ -124,7 +168,7 @@ export default function NormalGame() {
       setAttemptDurations(prev => [
         ...prev,
         {
-          song_id: songs[currentIndex].id,
+          song_id: songs[currentIndex].song_id,
           guess_type: 'title',
           attempts: 3,
           duration_sec: duration,
@@ -144,6 +188,7 @@ export default function NormalGame() {
     playSoundEffect(isCorrect);
 
     if (isCorrect) {
+
       const baseScores = [0, 100, 70, 40];
       const baseScore = baseScores[attempt] || 0;
       const penaltyPerSecond = 1;
@@ -154,10 +199,11 @@ export default function NormalGame() {
       setFeedback(positiveMessages[Math.floor(Math.random() * positiveMessages.length)]);
       setShowResult(true);
       setWasCorrect(true);
+      setResults(prev => [...prev, "success"]);
       setAttemptDurations(prev => [
         ...prev,
         {
-          song_id: songs[currentIndex].id,
+          song_id: songs[currentIndex].song_id,
           guess_type: 'title',
           attempts: attempt,
           duration_sec: duration,
@@ -181,10 +227,11 @@ export default function NormalGame() {
         setFeedback(failMessages[Math.floor(Math.random() * failMessages.length)]);
         setShowResult(true);
         setWasCorrect(false);
+        setResults(prev => [...prev, "fail"]);
         setAttemptDurations(prev => [
           ...prev,
           {
-            song_id: songs[currentIndex].id,
+            song_id: songs[currentIndex].song_id,
             guess_type: 'title',
             attempts: 3,
             duration_sec: duration
@@ -205,7 +252,7 @@ export default function NormalGame() {
     if (nextIndex >= songs.length) {
       try {
         await saveGameSession({
-          mode: 'normal',
+          mode: state.mode,
           finished_at: new Date().toISOString(),
           attempts: attemptDurations
         }, token);
@@ -229,7 +276,7 @@ export default function NormalGame() {
   if (showInstructions) {
     return (
       <InstructionModal
-        mode="normal"
+        mode={state.mode}
         onStart={handleStartInstructions}
         onClose={() => window.location.href = '/'}
       />
@@ -250,8 +297,18 @@ export default function NormalGame() {
 
   const currentSong = songs[currentIndex];
 
+
+  if (loading) return <FullScreenLoader />;
+
   return (
     <div className="normal-game">
+
+      <div>
+        <video ref={videoRef} loop muted id="bg-video">
+          <source src="assets/video.mp4" type="video/mp4" />
+        </video>
+      </div>
+
       {countdown > 0 && <Countdown value={countdown} />}
       {transitionMessage && <TransitionMessage message={transitionMessage} />}
 
@@ -275,8 +332,13 @@ export default function NormalGame() {
           title={currentSong.title}
           artist={currentSong.artist}
           album={currentSong.album}
+          album_img={currentSong.album_img}
+          audio={currentSong.audio}
           isLast={currentIndex === songs.length - 1}
           onNext={handleNext}
+          currentIndex={currentIndex}
+          totalSongs={songs.length}
+          results={results}
         />
       )}
     </div>

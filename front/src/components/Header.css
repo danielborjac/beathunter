@@ -1,5 +1,5 @@
 .main-header {
-  background-color: #0e1529;
+  background: linear-gradient(145deg, #1d1828, #1a153d);
   color: white;
   padding: 1rem 2rem;
   display: flex;
@@ -17,15 +17,15 @@
 }
 
 .main-header .btn {
-  background: #ff4081;
+  background: #612257;
   border: none;
   color: white;
 }
 
 .main-header .btn-outline {
   background: transparent;
-  border: 2px solid #ff4081;
-  color: #ff4081;
+  border: 2px solid #822c73;
+  color: #822c73;
 }
 
 .main-header .username {
@@ -59,6 +59,7 @@
   border-radius: 8px;
   padding: 10px;
   z-index: 1000;
+  font-family: sans-serif;
 }
 
 .mobile-menu ul {
@@ -90,5 +91,6 @@
   }
   .mobile-name {
     display: block;
+    font-family: sans-serif;
   }
 }

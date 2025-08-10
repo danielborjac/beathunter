@@ -8,7 +8,7 @@ const GameSession = sequelize.define('GameSession', {
     type: DataTypes.INTEGER,
     references: { model: 'users', key: 'id' }
   },
-  mode: DataTypes.ENUM('normal', 'daily', 'category'),
+  mode: DataTypes.ENUM('random', 'daily', 'category'),
   started_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
@@ -29,7 +29,7 @@ const sequelize = require('../config/database');
 
 const GameSession = sequelize.define('GameSession', {
   user_id: DataTypes.INTEGER,
-  mode: DataTypes.ENUM('normal', 'daily', 'category'),
+  mode: DataTypes.ENUM('random', 'daily', 'classic'),
   started_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW

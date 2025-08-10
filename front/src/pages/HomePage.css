@@ -19,28 +19,8 @@
   color: #fff;
 }
 
-
-.loader-overlay {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at top left, #161926, #1c3553, #1c465e);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-}
-
-.spinner {
-  width: 60px;
-  height: 60px;
-  border: 6px solid rgba(255, 255, 255, 0.2);
-  border-top-color: #ff4081;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+@media (max-width: 768px) {
+  .home-title {
+    font-size: 2rem;
   }
 }

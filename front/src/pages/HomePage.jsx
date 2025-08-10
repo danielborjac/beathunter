@@ -2,6 +2,7 @@ import './HomePage.css';
 import GameModes from '../components/GameModes';
 import BackgroundVideo from '../components/BackgroundVideo';
 import { useState, useEffect } from 'react';
+import FullScreenLoader from '../components/FullScreenLoader';
 
 export default function HomePage() {
 
@@ -9,7 +10,6 @@ export default function HomePage() {
   const [isContentReady, setIsContentReady] = useState(false);
 
   useEffect(() => {
-    // Simula el contenido renderizado (puedes optimizar según tu lógica real)
     const timeout = setTimeout(() => setIsContentReady(true), 500);
     return () => clearTimeout(timeout);
   }, []);
@@ -22,9 +22,7 @@ export default function HomePage() {
       <div className="home-container">
 
         {isLoading && (
-          <div className="loader-overlay">
-            <div className="spinner" />
-          </div>
+          <FullScreenLoader />
         )}
         
         <BackgroundVideo onReady={() => setIsVideoReady(true)} />

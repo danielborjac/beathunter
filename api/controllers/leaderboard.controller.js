@@ -2,10 +2,10 @@ const { UserStatistic, User } = require('../models');
 const { Op } = require('sequelize');
 const { LeaderboardCache } = require('../models');
 
-// ?mode=normal&limit=10
+// ?mode=random&limit=10
 exports.getLeaderboard = async (req, res) => {
   try {
-    const mode = req.query.mode || 'normal';
+    const mode = req.query.mode || 'random';
     const limit = parseInt(req.query.limit) || 10;
     const time_range = req.query.time_range || req.query.range || 'all'; // all, daily, monthly
 
@@ -37,7 +37,7 @@ exports.getLeaderboard = async (req, res) => {
 
 exports.getCachedLeaderboard = async (req, res) => {
   try {
-    const mode = req.query.mode || 'normal';
+    const mode = req.query.mode || 'random';
     const time_range = req.query.time_range || req.query.range || 'all_time';
 
     const cache = await LeaderboardCache.findOne({
