@@ -14,6 +14,7 @@ export default function HomePage() {
     return () => clearTimeout(timeout);
   }, []);
 
+
   const isLoading = !isVideoReady || !isContentReady;
 
 

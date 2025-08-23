@@ -6,5 +6,6 @@ const gameSessionController = require('../controllers/gameSession.controller');
 
 router.post('/game-sessions', authMiddleware, gameSessionController.createSessionWithAttempts);
 router.get('/game-sessions', authMiddleware, checkAdminRole, gameSessionController.getUserSessions);
+router.get('/game-sessions-daily-attempt', authMiddleware, gameSessionController.getUserSessionsDailyAttempt);
 
 module.exports = router;

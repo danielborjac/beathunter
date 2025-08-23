@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: beathunter-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: guessthetrack_db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+
+  backend:
+    build: ./api
+    container_name: beathunter-api
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_USER: admin
+      DB_PASSWORD: 1234
+      DB_NAME: guessthetrack_db
+      HTTP_PORT: 3306
+    ports:
+      - "8001:3000"
+
+  frontend:
+    build: ./front
+    container_name: beathunter-front
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:80" # Front estará en http://localhost:3000
+
+volumes:
+  mysql_data:

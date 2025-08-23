@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaUser, FaMusic, FaCalendar, FaBars, FaTimes } from 'react-icons/fa';
+import { FaHome, FaUser, FaMusic, FaCalendar, FaBars, FaTimes, FaBook } from 'react-icons/fa';
 import './Sidebar.css';
 
 const Sidebar = () => {
@@ -10,8 +10,9 @@ const Sidebar = () => {
   const navItems = [
     { path: '/dashboard', label: 'Inicio', icon: <FaHome /> },
     { path: '/dashboard/users', label: 'Usuarios', icon: <FaUser /> },
-    { path: '/dashboard/categories', label: 'Categorías', icon: <FaMusic /> },
-    { path: '/dashboard/daily-songs', label: 'Canciones Diarias', icon: <FaCalendar /> },
+    { path: '/dashboard/params', label: 'Parámetros generales', icon: <FaBook /> },
+    { path: '/dashboard/categories', label: 'Modo clásico', icon: <FaMusic /> },
+    { path: '/dashboard/daily-songs', label: 'Modo diario', icon: <FaCalendar /> },
   ];
 
   return (

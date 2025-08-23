@@ -1,5 +1,5 @@
 import './FeedbackDisplay.css';
-
+import { useEffect } from 'react';
 
 export default function FeedbackDisplay({ feedback, title, artist, album, album_img, audio, isLast, onNext, totalSongs, results = [] }) {
 
@@ -27,14 +27,23 @@ export default function FeedbackDisplay({ feedback, title, artist, album, album_
       </div>
     );
   };
+
+
+  useEffect(() => {
+    if (isLast) {
+      
+      const timer = setTimeout(() => {
+        onNext();
+      }, 2000); // Espera 2 segundos antes de pasar al resultado final
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLast, onNext]);
   
   return (
     <div className="feedback">
       {renderProgressDots()}
       <p>{feedback}</p>
-
-
-
       <div className="song-card">
         <div className="album-section">
           <img
@@ -51,9 +60,12 @@ export default function FeedbackDisplay({ feedback, title, artist, album, album_
         </div>
       </div>
 
-      <button className="next-btn" onClick={onNext}>
-        {isLast ? 'Finalizar partida' : 'Siguiente canción'}
-      </button>
+      {/* Solo mostrar el botón si no es la última canción */}
+      {!isLast && (
+        <button className="next-btn" onClick={onNext}>
+          Siguiente canción
+        </button>
+      )}
     </div>
   );
 }

@@ -1,7 +1,15 @@
-const API_BASE = 'http://localhost:3000/api/dashboard';
+const API_BASE = `${import.meta.env.VITE_API_BASE_URL}/dashboard`;
 
 export async function getUsers(token) {
   const res = await fetch(`${API_BASE}/users`, {
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error('Error fetching users');
+  return res.json();
+}
+
+export async function countUsers(token) {
+  const res = await fetch(`${API_BASE}/countUsers`, {
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error('Error fetching users');
@@ -48,7 +56,7 @@ export async function deleteUser(id, token) {
 
 export async function searchUsers(query, token) {
   if (!query || query.length < 1) return [];
-  const res = await fetch(`${API_BASE}/users?search=${encodeURIComponent(query)}`, {
+  const res = await fetch(`${API_BASE}/searchUsers?search=${encodeURIComponent(query)}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Error searching users');

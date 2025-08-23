@@ -3,7 +3,7 @@ import SearchSelect from '../SearchSelect';
 import SelectedItemList from '../SelectedItemList';
 import { fetchPlaylists, createCategory, updateCategory } from '../../../api/dashboard/categories';
 import { useSelector } from 'react-redux';
-import './categoryForm.css';
+import './CategoryForm.css';
 
 
 export default function MixForm({ editingCategory = null, onCancel, onSaved }) {
@@ -140,9 +140,10 @@ export default function MixForm({ editingCategory = null, onCancel, onSaved }) {
       />
 
       <SelectedItemList items={selectedPlaylists} onRemove={removePlaylist} itemKey="id" itemLabel="name" />
-
-        <button type="submit" disabled={loading}>{loading ? 'Guardando...' : (editingCategory ? 'Actualizar' : 'Añadir mix')}</button>
-        {editingCategory && <button type="button" onClick={() => { resetForm(); onCancel && onCancel(); }}>Cancelar</button>}
+        <div style={{ display: 'flex', gap: 8}}>
+          <button type="submit" disabled={loading}>{loading ? 'Guardando...' : (editingCategory ? 'Actualizar' : 'Añadir mix')}</button>
+          {editingCategory && <button type="button" onClick={() => { resetForm(); onCancel && onCancel(); }}>Cancelar</button>}
+        </div>  
     </form>
   );
 }

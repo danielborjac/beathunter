@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './categoriesPage.css';
+import './CategoriesPage.css';
 import { fetchCategories } from '../api/categories'; 
 import FullScreenLoader from '../components/FullScreenLoader';
 import { BiSolidSearch } from "react-icons/bi";
 import LoginForm from '../components/LoginForm';
-import Modal from '../components/modal';
+import Modal from '../components/Modal';
 import { useSelector } from 'react-redux';
 
 const CategoryRow = ({ title, items, type, limit = 6 }) => {
@@ -31,10 +31,10 @@ const CategoryRow = ({ title, items, type, limit = 6 }) => {
     else{
       const data =
         type === 'mix'
-          ? { mode: "classic", type: 'mix', playlists: item.playlist_ids, limit: 6 }
+          ? {id: item.id, mode: "classic", type: 'mix', playlists: item.playlist_ids, limit: 6 }
           : type === 'genre'
-          ? { mode: "classic", type: 'genre', genreId: item.genre_id, limit: 6 }
-          : { mode: "classic", type: 'artist', artistId: item.artist_id, limit: 6 };
+          ? {id: item.id, mode: "classic", type: 'genre', genreId: item.genre_id, limit: 6 }
+          : {id: item.id, mode: "classic", type: 'artist', artistId: item.artist_id, limit: 6 };
       navigate('/game', { state: data });
     }
   };

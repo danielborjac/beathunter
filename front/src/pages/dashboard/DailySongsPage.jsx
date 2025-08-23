@@ -4,10 +4,12 @@ import SongsForm from '../../components/dashboard/dailySong/SongsForm';
 import './CategoriesPage.css'; 
 import { useSelector } from 'react-redux';
 
+
 export default function DailySongsPage() {
   const [daily, setDaily] = useState([]);
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(false);
+
 
   const { token } = useSelector(state => state.auth);
 
@@ -36,9 +38,11 @@ export default function DailySongsPage() {
     }
   }
 
+
+
   return (
     <div className="categories-page">
-      <h1>Canciones Diarias</h1>
+      <h2>Canciones Diarias</h2>
 
       <div className="form-container">
         <SongsForm

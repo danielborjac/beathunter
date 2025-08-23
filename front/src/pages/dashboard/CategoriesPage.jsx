@@ -83,7 +83,7 @@ export default function CategoriesPage() {
 
   return (
     <div className="categories-page">
-      <h1>Gestión de Categorías</h1>
+      <h2>Gestión de Categorías</h2>
       <div className="tabs">
         <button
           className={activeTab === 'mix' ? 'active' : ''}

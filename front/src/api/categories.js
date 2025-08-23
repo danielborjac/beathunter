@@ -3,8 +3,8 @@ import axios from 'axios';
 export const fetchCategories = async (mode) => {
   try {
     let response;
-    if (mode=="all") response = await axios.get(`http://localhost:3000/api/categories`);
-    else response = await axios.get(`http://localhost:3000/api/categories?mode=${mode}`);
+    if (mode=="all") response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/categories`);
+    else response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/categories?mode=${mode}`);
     return response.data;
   } catch (error) {
     console.error('Error al obtener las categorías:', error);

@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-const SECRET = 'clave123'; 
-
+//const SECRET = 'clave123'; 
+const SECRET = process.env.JWT_SECRET;
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
 

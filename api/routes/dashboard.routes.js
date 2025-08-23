@@ -15,7 +15,8 @@ router.put('/daily/:id', authMiddleware, checkAdminRole, dailySongController.upd
 router.delete('/daily/:id', authMiddleware, checkAdminRole, dailySongController.deleteDeezerDailyController);
 
 router.get('/users', authMiddleware, checkAdminRole, authController.getAllUser);
-router.get('/users', authMiddleware, checkAdminRole, authController.getAllUser);
+router.get('/countUsers', authMiddleware, checkAdminRole, authController.countUsers);
+router.get('/searchUsers', authMiddleware, checkAdminRole, authController.searchUser);
 router.put('/users/:id', authMiddleware, checkAdminRole, authController.updateUser);
 router.delete('/users/:id', authMiddleware, checkAdminRole, authController.deleteUser);
 

@@ -3,7 +3,8 @@ import SearchSelect from '../SearchSelect';
 import SelectedItemList from '../SelectedItemList';
 import { createDailySong, updateDailySong, searchSongs } from '../../../api/dashboard/dailySongs';
 import { useSelector } from 'react-redux';
-import '../categories/categoryForm.css'; 
+import '../categories/CategoryForm.css'; 
+import { getParamsByMode } from '../../../api/dashboard/params';
 
 export default function SongsForm({ editingData = null, onCancel, onSaved }) {
   const [date, setDate] = useState(''); // date_release
@@ -14,6 +15,7 @@ export default function SongsForm({ editingData = null, onCancel, onSaved }) {
 
   // Si entramos en edición, popular formulario
   useEffect(() => {
+    
     if (editingData) {
       // backend puede devolver songs (detalladas) o songs_id (solo ids)
       setDate(editingData.date_release ?? editingData.date ?? '');
@@ -31,10 +33,18 @@ export default function SongsForm({ editingData = null, onCancel, onSaved }) {
     }
   }, [editingData]);
 
-  function handleAddSong(song) {
+
+  async function total_songs(){
+    const songs = await getParamsByMode("daily");
+    return songs[0].total_songs;   
+  }
+
+  async function handleAddSong(song) {
+    const limit = await total_songs();
+    console.log(limit);
     if (selectedSongs.find(s => s.id === song.id)) return;
-    if (selectedSongs.length >= 3) {
-      setError('Solo puedes seleccionar 3 canciones.');
+    if (selectedSongs.length >= limit) {
+      setError(`Solo puedes seleccionar ${limit} canciones.`);
       return;
     }
     setSelectedSongs(prev => [...prev, song]);
@@ -49,9 +59,10 @@ export default function SongsForm({ editingData = null, onCancel, onSaved }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-
-    if (selectedSongs.length !== 3) {
-      setError('Debes seleccionar exactamente 3 canciones.');
+    const limit = await total_songs();
+    console.log(limit);
+    if (selectedSongs.length !== limit) {
+      setError(`Debes seleccionar exactamente ${limit} canciones.`);
       return;
     }
     if (!date) {

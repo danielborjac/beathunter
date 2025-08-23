@@ -6,6 +6,7 @@ import Dashboard from '../pages/dashboard/DashboardHome';
 import UsersPage from '../pages/dashboard/UsersPage';
 import CategoriesPage from '../pages/dashboard/CategoriesPage';
 import DailySongsPage from '../pages/dashboard/DailySongsPage';
+import GeneralParams from '../pages/dashboard/GeneralParams';
 
 const DashboardRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const DashboardRoutes = () => {
         <Route path="/users" element={<UsersPage />} />
         <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/daily-songs" element={<DailySongsPage />} />
+        <Route path="/params" element={<GeneralParams />} />
       </Routes>
     </div>
   );

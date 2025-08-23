@@ -1,52 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import { FaUser, FaMusic, FaCalendar } from 'react-icons/fa';
-import DashboardCard from '../../components/dashboard/DashboardCard';
-import './PageStyles.css';
+import React, { useEffect, useState } from "react";
+import "./DashboardHome.css";
+import DashboardCard from "../../components/dashboard/DashboardCard";
+import { countUsers } from "../../api/dashboard/users";
+import { countCategories } from "../../api/dashboard/categories";
+import { FaUsers, FaGuitar, FaCompactDisc, FaMusic } from "react-icons/fa";
 
-const Dashboard = () => {
-  const [stats, setStats] = useState({
-    users: 0,
-    categories: 0,
-    dailySongs: 0,
-  });
+export default function DashboardHome() {
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [categories, setCategories] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Reemplazar con llamadas reales a tu API
-    const fetchStats = async () => {
+    async function fetchData() {
       try {
-        const [userRes, categoryRes, dailyRes] = await Promise.all([
-          fetch('/api/profile'), // suponiendo que retorna total de usuarios
-          fetch('/api/categories'),
-          fetch('/api/daily')
-        ]);
+        const token = localStorage.getItem("token");
+        const userData = await countUsers(token);
+        setTotalUsers(userData.totalUsers);
 
-        const users = await userRes.json();
-        const categories = await categoryRes.json();
-        const dailySongs = await dailyRes.json();
-
-        setStats({
-          users: users.length,
-          categories: categories.length,
-          dailySongs: dailySongs.length,
-        });
-      } catch (error) {
-        console.error('Error al cargar estadísticas:', error);
+        const categoryData = await countCategories();
+        setCategories(categoryData);
+      } catch (err) {
+        console.error("Error fetching dashboard data", err);
+      } finally {
+        setLoading(false);
       }
-    };
-
-    fetchStats();
+    }
+    fetchData();
   }, []);
 
+  if (loading) return <div className="dashboard-home">Cargando...</div>;
+
   return (
-    <div className="page-container">
-      <h1>Panel de Administración</h1>
+    <div className="dashboard-home">
+      <h2>Panel de control</h2>
       <div className="dashboard-cards">
-        <DashboardCard title="Usuarios" value={stats.users} icon={<FaUser />} />
-        <DashboardCard title="Categorías" value={stats.categories} icon={<FaMusic />} />
-        <DashboardCard title="Canciones Diarias" value={stats.dailySongs} icon={<FaCalendar />} />
+        <DashboardCard
+          icon={<FaUsers />}
+          title="Usuarios"
+          value={totalUsers}
+          color="#4cafef"
+        />
+        <DashboardCard
+          icon={<FaCompactDisc />}
+          title="Géneros"
+          value={categories.genre || 0}
+          color="#ff9800"
+        />
+        <DashboardCard
+          icon={<FaMusic />}
+          title="Mixes personalizados"
+          value={categories.mix || 0}
+          color="#8bc34a"
+        />
+        <DashboardCard
+          icon={<FaGuitar />}
+          title="Artistas"
+          value={categories.artist || 0}
+          color="#e91e63"
+        />
       </div>
     </div>
   );
-};
-
-export default Dashboard;
+}

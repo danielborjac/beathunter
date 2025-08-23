@@ -23,11 +23,25 @@ exports.saveDeezerDailyController = async (req, res) => {
 
 exports.getDeezerDailyController = async (req, res) => {
   try {
-    const songs = await DailySongs.findAll();
+    const now = new Date();
+    const options = { year: 'numeric',month: '2-digit', day: '2-digit',};
+    const today = now.toLocaleDateString('es-EC', options).split('/').reverse().join('-'); 
+    console.log(today);
+    const songs = await DailySongs.findAll({
+      where: {
+        date_release: {
+          [Op.gte]: today
+        }
+      }
+    });
     res.json(songs);
+
   } catch (error) {
     console.error('Error al obtener canciones del modo diario:', error);
-    res.status(500).json({ error: 'Error al obtener canciones del modo diario', details: error.message });
+    res.status(500).json({ 
+      error: 'Error al obtener canciones del modo diario', 
+      details: error.message 
+    });
   }
 };
 

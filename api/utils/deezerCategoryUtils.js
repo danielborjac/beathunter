@@ -18,24 +18,23 @@ const shuffleArray = (array) => {
  * Clasifica canciones según su "rank" para dificultad
  */
 exports.classifyDifficulty = (tracks) => {
-  const easy = tracks.filter(track => track.rank >= 700000);
-  const medium = tracks.filter(track => track.rank >= 400000 && track.rank < 700000);
-  const hard = tracks.filter(track => track.rank < 400000);
+  const easy = tracks.filter(track => track.rank >= 500000);
+  const medium = tracks.filter(track => track.rank < 500000);
 
-  return { easy, medium, hard };
+  return { easy, medium };
 };
 
 /**
  * Genera 6 opciones de canciones incluyendo la correcta (track)
  */
-exports.generateOptions = (correctTitle, optionsPool) => {
+exports.generateOptions = (correctTitle, optionsPool, options) => {
   const optionsSet = new Set();
   optionsSet.add(correctTitle);
 
   const candidates = shuffleArray(optionsPool.filter(title => title !== correctTitle));
 
   for (const title of candidates) {
-    if (optionsSet.size >= 6) break;
+    if (optionsSet.size >= options) break;
     optionsSet.add(title);
   }
 

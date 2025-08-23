@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:3000/api/dashboard';
+const API_BASE = `${import.meta.env.VITE_API_BASE_URL}/dashboard`;
 
 export async function getDailySongs(token) {
   const res = await fetch(`${API_BASE}/daily`, {

@@ -11,7 +11,7 @@ export default function UsersPage() {
   const [showForm, setShowForm] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchOptions, setSearchOptions] = useState([]);
+  //const [searchOptions, setSearchOptions] = useState([]);
   const { token } = useSelector((state) => state.auth);
 
   // carga inicial de todos los usuarios
@@ -36,7 +36,7 @@ export default function UsersPage() {
     const t = setTimeout(async () => {
       // si está vacío -> recargar todos
       if (!searchQuery || searchQuery.trim().length === 0) {
-        setSearchOptions([]);
+        //setSearchOptions([]);
         await loadUsers();
         return;
       }
@@ -44,11 +44,11 @@ export default function UsersPage() {
       try {
         const res = await searchUsers(searchQuery.trim(), token);
         const list = Array.isArray(res) ? res : (res.users || res.user || []);
-        setSearchOptions(list);
+        //setSearchOptions(list);
         setUsers(list); // sustituir tabla por resultados
       } catch (err) {
         console.error('Error buscando usuarios:', err);
-        setSearchOptions([]);
+        //setSearchOptions([]);
         // no hacemos fallback automático a loadUsers para no confundir al usuario
       }
     }, 300); // 300ms debounce
@@ -118,7 +118,8 @@ export default function UsersPage() {
         <SearchSelect
           searchTerm={searchQuery}
           onSearchChange={(q) => setSearchQuery(q)}
-          options={searchOptions}
+          //options={searchOptions}
+          options={[]}
           optionKey="id"
           optionLabel="username"
           onSelect={(user) => {
@@ -153,12 +154,14 @@ export default function UsersPage() {
               />
 
               <label>Rol</label>
-              <input
-                type="text"
-                placeholder="Rol"
+
+              <select
                 value={form.role}
                 onChange={(e) => setForm({ ...form, role: e.target.value })}
-              />
+              >
+                <option value="user">user</option>
+                <option value="admin">admin</option>
+              </select>
 
               <label>Contraseña (opcional)</label>
               <input

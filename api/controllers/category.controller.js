@@ -1,5 +1,5 @@
-const Category = require('../models/Category.model');
-const { Op } = require('sequelize');
+const Category = require('../models/category.model');
+const { Op, fn, col } = require('sequelize');
 
 exports.getCategories = async (req, res) => {
   try {
@@ -124,5 +124,28 @@ exports.updateCategories = async (req, res) => {
   } catch (error) {
     console.error('Error al actualizar categoría:', error);
     res.status(500).json({ error: 'Error del servidor' });
+  }
+};
+
+exports.countCategoriesByMode = async (req, res) => {
+  try {
+    const counts = await Category.findAll({
+      attributes: [
+        'mode',
+        [fn('COUNT', col('id')), 'total']
+      ],
+      group: ['mode']
+    });
+
+    // Convertir a objeto plano
+    const result = {};
+    counts.forEach(row => {
+      result[row.mode] = parseInt(row.get('total'), 10);
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error al contar categorías:', error);
+    res.status(500).json({ error: 'Error al contar categorías', details: error.message });
   }
 };

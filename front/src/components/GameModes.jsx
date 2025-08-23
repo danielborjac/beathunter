@@ -4,16 +4,15 @@ import normalIcon from '/assets/icons/random.svg';
 import randomIcon from '/assets/icons/daily.svg';
 import classicIcon from '/assets/icons/classic.svg';
 import LoginForm from '../components/LoginForm';
-import Modal from '../components/modal';
+import Modal from '../components/Modal';
 import { useSelector } from 'react-redux';
 import { useState, useEffect  } from 'react';
 import playClickSound from '../utils/playClickSound';
 import { fetchCategories } from '../api/categories'; 
+import { getGameSessionDailyAttempt } from '../api/gameSession';
 
 
 export default function GameModes() {
-    //const data = { type: 'mix', mode:'normal', playlists: [867825522, 9788497342, 12028030391, 5569230782, 13600608121, 11941806081, 6275031904, 10136091322, 6987556164, 3803398766, 5104249748], limit: 2 };
-
     const navigate = useNavigate();
 
     const { token } = useSelector(state => state.auth);
@@ -21,11 +20,44 @@ export default function GameModes() {
 
     const [categories, setCategories] = useState({ random: [] });
 
+    const [isUserDailyPlayed, setIsUserDailyPlayed] = useState(false);
+
+
+    const fetchDailyPlayed = async () => {
+        try {
+        if (!token) {
+            setIsUserDailyPlayed(false);
+            return;
+        }
+        const dailyAttempt = await getGameSessionDailyAttempt(token);
+        setIsUserDailyPlayed(dailyAttempt.hasDailyAttempt === true);
+        } catch (err) {
+        console.error("Error al revisar partida:", err);
+        setIsUserDailyPlayed(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!token) {
+        setIsUserDailyPlayed(false);
+        return;
+        }
+
+        fetchDailyPlayed(); // primera comprobación inmediata
+
+       
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token]);
+
+    // Log cuando cambie el valor
+    useEffect(() => {
+    }, [isUserDailyPlayed]);
+
+
     useEffect(() => {
         const loadCategories = async () => {
         try {
             const data = await fetchCategories("random");
-            console.log(data);
             setCategories(data);
         } catch(error){
             console.error(error);
@@ -61,6 +93,7 @@ export default function GameModes() {
         icon: randomIcon,
         route: '/game',
         size: 'normal',
+        state: isUserDailyPlayed,
     },
     {
         id:1,
@@ -80,7 +113,41 @@ export default function GameModes() {
     }
     ];
 
+
     return (
+  <section className="game-modes-container">
+    {gameModes.map((mode, idx) => {
+      const isDisabled = mode.id === 0 && isUserDailyPlayed;
+
+        return (
+            <div
+                key={idx}
+                className={`mode-card ${mode.size} ${isDisabled ? "disabled" : ""}`}
+                onClick={() => {
+                    if (!isDisabled) handleNormalClick(mode.route, mode.id);
+                }}
+            >
+            <img
+                src={mode.icon}
+                alt={mode.title}
+                className={`mode-icon ${isDisabled ? "icon-disabled" : ""}`}
+            />
+            <h3>{mode.title}</h3>
+            {!isDisabled && <p>{mode.description}</p>}
+            {isDisabled && <span className="locked-label">Debes esperar hasta mañana para jugar otra partida</span>}
+            </div>
+        );
+        })}
+
+        {showLogin && (
+        <Modal show={showLogin} onClose={() => setShowLogin(false)}>
+            <LoginForm onSuccess={() => setShowLogin(false)} />
+        </Modal>
+        )}
+    </section>
+    );
+
+    /*return (
     <section className="game-modes-container">
         {gameModes.map((mode, idx) => (
         <div
@@ -99,5 +166,5 @@ export default function GameModes() {
         </Modal>
         )}
     </section>
-    );
+    );*/
 }

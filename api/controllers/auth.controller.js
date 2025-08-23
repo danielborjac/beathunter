@@ -74,7 +74,10 @@ exports.profile = async (req, res) => {
 
 exports.getAllUser = async (req, res) => {
   try {
-    const user = await User.findAll();
+    const user = await User.findAll({
+      where: {
+        role: "user"
+    } });
     res.json({ user });
   } catch (error) {
     console.error('Error al obtener usuarios:', error);
@@ -85,6 +88,7 @@ exports.getAllUser = async (req, res) => {
 exports.searchUser = async (req, res) => {
   try {
     const { search } = req.query;
+    console.log(search);
     if (!search) {
       return res.status(400).json({ error: 'Debe proporcionar un parámetro de búsqueda' });
     }
@@ -92,7 +96,8 @@ exports.searchUser = async (req, res) => {
       where: {
         username: {
           [Op.like]: `%${search}%`
-        }
+        },
+        role: "user"
       },
       attributes: ['id', 'username', 'email', 'role', 'created_at']
     });
@@ -107,6 +112,8 @@ exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { username, email, password, role } = req.body;
+
+    // Verificar si el usuario existe
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
@@ -116,29 +123,47 @@ exports.updateUser = async (req, res) => {
       const usernameExists = await User.findOne({
         where: {
           username,
-          id: { [Op.ne]: id }
+          id: { [Op.ne]: id } // distinto id
         }
       });
       if (usernameExists) {
         return res.status(400).json({ error: `El nombre de usuario "${username}" ya está en uso` });
       }
-      const emailExists = await User.findOne({ where: { email } });
+    }
+
+    if (email) {
+      const emailExists = await User.findOne({
+        where: {
+          email,
+          id: { [Op.ne]: id } // distinto id
+        }
+      });
       if (emailExists) {
         return res.status(400).json({ error: `El correo "${email}" ya está registrado` });
       }
     }
 
-    let updatedFields = { username, email, role };
+    let password_hash = user.password_hash;
     if (password) {
-      updatedFields.password_hash = await bcrypt.hash(password, 10);
+      password_hash = await bcrypt.hash(password, 10);
     }
 
-    updatedFields = Object.fromEntries(
-      Object.entries(updatedFields).filter(([_, value]) => value !== undefined)
-    );
+    await user.update({
+      username: username || user.username,
+      email: email || user.email,
+      password_hash,
+      role: role || user.role
+    });
 
-    await user.update(updatedFields);
-    res.json({ message: 'Usuario actualizado correctamente', user });
+    res.json({
+      message: 'Usuario actualizado con éxito',
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
+    });
 
   } catch (error) {
     console.error('Error al actualizar usuario:', error);
@@ -164,4 +189,19 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar usuario', details: error.message });
   }
 };
+
+exports.countUsers = async (req, res) => {
+  try {
+    const totalUsers = await User.count({
+      where: { role: "user" }
+    });
+
+    res.json({ totalUsers });
+  } catch (error) {
+    console.error('Error al contar usuarios:', error);
+    res.status(500).json({ error: 'Error al contar usuarios', details: error.message });
+  }
+};
+
+
 

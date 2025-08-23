@@ -12,7 +12,7 @@ export default function BackgroundVideo({ onReady }) {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/videos');
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/videos`);
         const data = await res.json();
         setVideoIds(data);
       } catch (err) {

@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { classifyDifficulty, generateOptions, shuffleArray, sanitizeTitle } = require('../utils/deezerCategoryUtils');
 
-const getDeezerSongsByCategory = async ({ type, playlists, genreId, artistId, limit = 6 }) => {
+const getDeezerSongsByCategory = async ({ type, playlists, genreId, artistId, limit, options }) => {
   let allTracks = [];
   const optionsPoolSet = new Set();
 
@@ -9,11 +9,10 @@ const getDeezerSongsByCategory = async ({ type, playlists, genreId, artistId, li
     if (type === 'mix') {
 
       const randomArtistIds = shuffleArray(playlists).slice(0, 3);
-      console.log(randomArtistIds);
       // Recolectar canciones de múltiples playlists
       for (const playlistId of randomArtistIds) {
         const { data } = await axios.get(`https://api.deezer.com/playlist/${playlistId}`);
-        const tracks = data.tracks.data;
+        const tracks = data.tracks.data.filter(track => track.preview);
         allTracks.push(...tracks);
         tracks.forEach(track => optionsPoolSet.add(sanitizeTitle(track.title)));
       }
@@ -27,15 +26,23 @@ const getDeezerSongsByCategory = async ({ type, playlists, genreId, artistId, li
 
       const easySongs = shuffleArray(songsByDifficulty.easy).slice(0, Math.floor(limit / 2));
       const mediumSongs = shuffleArray(songsByDifficulty.medium).slice(0, Math.ceil(limit / 2));
-      const songsPool = [...easySongs, ...mediumSongs];
+      let songsPool = [...easySongs, ...mediumSongs];
+
+      // Si faltan canciones, completar con cualquier otra que no esté ya incluida
+      if (songsPool.length < limit) {
+        const usedIds = new Set(songsPool.map(song => song.id));
+        const remainingSongs = shuffledTracks.filter(song => !usedIds.has(song.id));
+        const extraSongs = shuffleArray(remainingSongs).slice(0, limit - songsPool.length);
+        songsPool = [...songsPool, ...extraSongs];
+      }
 
       return songsPool.map(track => ({
         title: sanitizeTitle(track.title),
         song_id: track.id,
         artist: track.artist.name,
         album: track.album.title,        
-        difficulty: track.rank > 700000 ? 'easy' : 'medium',
-        options: generateOptions(sanitizeTitle(track.title), [...optionsPoolSet]),
+        difficulty: track.rank > 500000 ? 'easy' : 'medium',
+        options: generateOptions(sanitizeTitle(track.title), [...optionsPoolSet], options),
         audio: track.preview,
         album_img: track.album.cover_medium
       }));
@@ -47,7 +54,7 @@ const getDeezerSongsByCategory = async ({ type, playlists, genreId, artistId, li
 
       for (const artistId of randomArtistIds) {
         const res = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=300`);
-        const topTracks = res.data.data;
+        const topTracks = res.data.data.filter(track => track.preview);
         topTracks.forEach(track => optionsPoolSet.add(sanitizeTitle(track.title)));
         
         if (topTracks.length > 0) {
@@ -58,7 +65,7 @@ const getDeezerSongsByCategory = async ({ type, playlists, genreId, artistId, li
 
     } else if (type === 'artist') {
       const res = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=300`);
-      const allArtistTracks = res.data.data;
+      const allArtistTracks = res.data.data.filter(track => track.preview);
       allArtistTracks.forEach(track => optionsPoolSet.add(sanitizeTitle(track.title)));
       const selectedTracks = shuffleArray(allArtistTracks).slice(0, limit);
       allTracks.push(...selectedTracks);
@@ -75,7 +82,7 @@ const getDeezerSongsByCategory = async ({ type, playlists, genreId, artistId, li
       artist: track.artist.name,
       album: track.album.title,
       difficulty: null,
-      options: generateOptions(sanitizeTitle(track.title), [...optionsPoolSet]),
+      options: generateOptions(sanitizeTitle(track.title), [...optionsPoolSet], options),
       audio: track.preview,
       album_img: track.album.cover_medium
     }));

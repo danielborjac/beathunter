@@ -3,12 +3,13 @@ const { sanitizeTitle, shuffleArray } = require('../utils/deezerCategoryUtils');
 const DailySongs = require('../models/dailySong.model');
 
 
-const getDailySongs = async () => {
-  const today = new Date().toISOString().split('T')[0];
-  const todayString = today.toString()
+const getDailySongs = async (number) => {
+  const now = new Date();
+  const options = { year: 'numeric',month: '2-digit', day: '2-digit',};
+  const today = now.toLocaleDateString('es-EC', options).split('/').reverse().join('-'); 
 
   try {
-    const dailyRecord = await DailySongs.findOne({ where: { date_release: todayString } });
+    const dailyRecord = await DailySongs.findOne({ where: { date_release: today } });
 
     if (!dailyRecord || !dailyRecord.songs_id) {
       throw new Error('No hay canciones disponibles para hoy');
@@ -21,7 +22,7 @@ const getDailySongs = async () => {
       const { data: track } = await axios.get(`https://api.deezer.com/track/${songId}`);
 
       // Obtener opciones externas (sin usar el mismo pool)
-      const options = await getExternalTitleOptions(track);
+      const options = await getExternalTitleOptions(track, number);
 
       songs.push({
         title: sanitizeTitle(track.title),
@@ -41,7 +42,7 @@ const getDailySongs = async () => {
   }
 };
 
-async function getExternalTitleOptions(originalTrack) {
+async function getExternalTitleOptions(originalTrack, number) {
   try {
     const artistId = originalTrack?.artist?.id;
     const originalTitle = originalTrack?.title;
@@ -55,14 +56,14 @@ async function getExternalTitleOptions(originalTrack) {
 
     // Filtrar para eliminar la canción original y evitar duplicados por título
     const filtered = topTracks.filter(
-      (track) => track.title !== originalTitle
+      (track) => sanitizeTitle(track.title).toLowerCase() !== sanitizeTitle(originalTitle).toLowerCase()
     );
 
     // Mezclar aleatoriamente
     const shuffled = filtered.sort(() => Math.random() - 0.5);
 
     // Tomar hasta 5 títulos distintos
-    const options = shuffled.slice(0, 5).map((track) => sanitizeTitle(track.title));
+    const options = shuffled.slice(0, number - 1).map((track) => sanitizeTitle(track.title));
 
     // Añadir la correcta y mezclar todo
     const allOptions = [...options, sanitizeTitle(originalTitle)].sort(() => Math.random() - 0.5);

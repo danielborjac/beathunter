@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:3000/api/dashboard';
+const API_BASE = `${import.meta.env.VITE_API_BASE_URL}/dashboard`;
 
 export async function fetchPlaylists(search) {
   if (!search) return [];
@@ -21,7 +21,7 @@ export async function fetchArtists(search) {
 }
 
 export async function fetchCategories() {
-  const res = await fetch(`http://localhost:3000/api/categories`);
+  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/categories`);
   if (!res.ok) throw new Error('Error fetching categories');
   const data = await res.json();
 
@@ -33,6 +33,13 @@ export async function fetchCategories() {
   ];
 
   return combined;
+}
+
+export async function countCategories() {
+  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/countCategoriesByMode`);
+  if (!res.ok) throw new Error('Error fetching categories');
+  const data = await res.json();
+  return data;
 }
 
 export async function createCategory(categoryData, token) {

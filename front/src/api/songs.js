@@ -1,6 +1,6 @@
 export async function fetchRandomSongs(limit = 6) {
   try {
-    const res = await fetch(`http://localhost:3000/api/songs/random?limit=${limit}`);
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/songs/random?limit=${limit}`);
     if (!res.ok) throw new Error('Error al obtener canciones');
     const data = await res.json();
 

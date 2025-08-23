@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SearchSelect from '../SearchSelect';
 import { fetchArtists, createCategory, updateCategory } from '../../../api/dashboard/categories';
 import { useSelector } from 'react-redux';
-import './categoryForm.css';
+import './CategoryForm.css';
 
 export default function ArtistForm({ editingCategory, onCancel, onSaved }) {
   const [searchTerm, setSearchTerm] = useState('');

@@ -1,25 +1,15 @@
-/*export async function fetchDeezerRandomSongs(limit = 6) {
-  try {
-    const res = await fetch(`http://localhost:3000/api/deezer/random?limit=${limit}`);
-    if (!res.ok) throw new Error('Error al obtener canciones desde Deezer');
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error('Error en fetchDeezerRandomSongs:', error);
-    throw error;
-  }
-}*/
-
-export async function fetchDeezerRandomSongs(state) {
+export async function fetchDeezerRandomSongs(state, limit, options) {
   try {
     const body = {
       "type": state.type,
-      "limit": state.limit,
+      //"limit": state.limit,
+      "limit": limit,
       "playlists": state.playlists,
       "genreId": state.genreId,
       "artistId": state.artistId,
+      "options": options
     }
-    const res = await fetch(`http://localhost:3000/api/deezer/category`, {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/deezer/category`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -34,9 +24,9 @@ export async function fetchDeezerRandomSongs(state) {
   }
 }
 
-export async function fetchDeezerDailySongs() {
+export async function fetchDeezerDailySongs(total_options) {
   try {
-    const res = await fetch(`http://localhost:3000/api/deezer/daily`);
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/deezer/daily?number=${total_options}`);
 
     if (!res.ok) throw new Error('Error al obtener canciones desde Deezer');
     const data = await res.json();

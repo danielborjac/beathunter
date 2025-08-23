@@ -1,12 +1,13 @@
 const { GameSession, GameAttempt, Song, UserStatistic } = require('../models');
 const updateLeaderboardCache = require('../utils/updateLeaderboardCache');
+const { Op } = require('sequelize');
 
 exports.createSessionWithAttempts = async (req, res) => {
   try {
-    const { mode, finished_at, attempts } = req.body;
+    const { mode, category_id, finished_at, attempts } = req.body;
     const user_id = req.user.id;
 
-    const session = await GameSession.create({ user_id, mode, finished_at });
+    const session = await GameSession.create({ user_id, mode, category_id, finished_at });
 
     let sessionTotalScore = 0;
 
@@ -71,6 +72,31 @@ exports.getUserSessions = async (req, res) => {
     });
     res.json(sessions);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getUserSessionsDailyAttempt = async (req, res) => {
+  try {
+    // Obtener fecha actual en formato YYYY-MM-DD
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+    // Buscar sesiones del usuario con mode = daily y fecha de finalización hoy
+    const session = await GameSession.findOne({
+      where: {
+        user_id: req.user.id,
+        mode: 'daily',
+        finished_at: {
+          [Op.between]: [startOfDay, endOfDay]
+        }
+      }
+    });
+
+    res.json({ hasDailyAttempt: !!session }); // true si existe, false si no
+  } catch (err) {
+    console.error('Error al verificar intento diario:', err);
     res.status(500).json({ error: err.message });
   }
 };

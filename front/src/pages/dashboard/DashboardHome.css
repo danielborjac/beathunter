@@ -1,0 +1,31 @@
+.dashboard-home {
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+  margin: 0 auto;
+}
+
+.dashboard-home h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: black;
+}
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;;
+  gap: 20px;
+  font-family: 'Poppins';
+}
+
+/* Responsive: en móviles, sin sidebar */
+@media (max-width: 768px) {
+  .dashboard-home {
+    margin-left: 0;
+    padding: 15px;
+    margin: 0 auto;
+  }
+  .dashboard-cards {
+    grid-template-columns: 1fr;
+  }
+}

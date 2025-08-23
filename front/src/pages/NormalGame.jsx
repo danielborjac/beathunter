@@ -17,11 +17,12 @@ import useGameTimer from '../hooks/useGameTimer';
 import './NormalGame.css';
 //import { fetchRandomSongs } from '../api/songs';
 import { fetchDeezerRandomSongs, fetchDeezerDailySongs } from '../api/deezer';
-import { saveGameSession } from '../api/gameSession';
+import { saveGameSession, getGameSessionDailyAttempt } from '../api/gameSession';
 import { useSelector } from 'react-redux';
 import { playSoundEffect } from '../utils/gameHelpers';
 import { prepareDeezerSongs } from "../utils/deezerGameHelper";
 import { useRef } from 'react';
+import { getParamsByMode} from '../api/dashboard/params';
 
 export default function NormalGame() {
 
@@ -54,41 +55,80 @@ export default function NormalGame() {
   const [wasCorrect, setWasCorrect] = useState(false);
   const [results, setResults] = useState([]);
 
+  const [generalParams, setGeneralParams] = useState();
+
   const { token } = useSelector((state) => state.auth);
   //const { play, pause } = useAudioFragment();
   const { play, pause } = useDeezerAudioFragment();
 
   const { start: startTimer, clear: clearTimer } = useGameTimer();
 
+  useEffect(() => {
+    const loadParams = async () => {
+      try {
+        const params = await getParamsByMode(state.mode);
+        setGeneralParams(params[0]);
+      } catch (err) {
+        console.error("Error cargando parámetros:", err);
+      }
+    };
+
+    if (state?.mode) {
+      loadParams();
+    }
+  }, [state?.mode]);
+
   const fetchSongs = async () => {
-    setLoading(true); // Muestra el loader
     try {
       let rawSongs;
-      if(state.mode == "daily") rawSongs = await fetchDeezerDailySongs();
-      else rawSongs = await fetchDeezerRandomSongs(state);
+      if (state.mode == "daily") {
+        rawSongs = await fetchDeezerDailySongs(generalParams.total_options);
+      } else {
+        rawSongs = await fetchDeezerRandomSongs(state, generalParams.total_songs, generalParams.total_options);
+      }
 
       const preparedSongs = prepareDeezerSongs(rawSongs);
       setSongs(preparedSongs);
+
+      // 🆕 Pre-carga del audio de la primera canción
+      if (preparedSongs[0]?.audio) {
+        const audio = new Audio(preparedSongs[0].audio);
+        audio.preload = "auto";
+      }
     } catch (error) {
       console.error(error);
       alert('Error al cargar canciones');
-      window.Location.href="/"
+      window.location.href = "/";
     } finally {
       setLoading(false); // Oculta el loader
     }
   };
 
   const videoRef = useRef(null);
+
+  const dailyGamePlayed = async () => {
+      try {
+      const dailyAttempt = await getGameSessionDailyAttempt(token);
+      if(dailyAttempt.hasDailyAttempt == true) window.location.href="/"
+      } catch (err) {
+      console.error("Error al revisar partida:", err);
+      }
+  };
+
+  useEffect(() => {
+    if(state == null) window.location.href="/"
+    if(state.mode == "daily") dailyGamePlayed()
+  }, []);
   
 
   useEffect(() => {
+    if (!generalParams) return;
     const hidden = JSON.parse(localStorage.getItem('hideInstructions') || '{}');
-    if(state == null) window.location.href="/"
     if (hidden.random && state.mode == "random") fetchSongs(); 
     else if (hidden.classic && state.mode == "classic") fetchSongs(); 
     else if (hidden.daily && state.mode == "daily") fetchSongs();  
     else setShowInstructions(true);
-  }, []);
+  }, [generalParams]);
 
   const handleStartInstructions = () => {
     setShowInstructions(false);
@@ -112,38 +152,42 @@ export default function NormalGame() {
     }
 
     if (countdown === 0) {
-      const start = Date.now();
-      setStartTime(start);
+      const startGame = async () => {
+        const start = Date.now();
+        setStartTime(start);
+        const attempt_duration = generalParams.attempt_duration * 1000;
+        startTimer(
+          (elapsed) => {
+            const percentage = Math.max(0, 100 - (elapsed / attempt_duration) * 100);
+            setProgress(percentage);
+          },
+          () => handleTimeOut(start),
+          100,
+          attempt_duration
+        );
 
-      // reproducimos el audio
-      if (songs[currentIndex]?.audio) {
-        console.log(songs);
-        play(songs[currentIndex].audio, attempt - 1).then(() => {
-          if (videoRef.current) {
-            videoRef.current.currentTime = 0;
-            videoRef.current.play().catch(err => {
-              console.warn("Video no pudo reproducirse:", err);
-            });
+        if (songs[currentIndex]?.audio) {
+          try {
+            await play(songs[currentIndex].audio, attempt - 1, generalParams);
+
+            if (videoRef.current) {
+              videoRef.current.currentTime = 0;
+              await videoRef.current.play().catch(err => {
+                console.warn("Video no pudo reproducirse:", err);
+              });
+            }
+
+          } catch (err) {
+            console.error("Error al reproducir el audio:", err);
+            alert("Ha ocurrido un error inesperado, volverás a la página principal");
+            window.location.href = '/';
+            return;
           }
-        })
-        .catch((err) => {
-          console.error("Error al reproducir el audio:", err);
-          alert("Ha ocurrido un error inesperado, volverás a la página principal");
-          window.location.href = '/'
-        });
-      }
+        }
+      };
 
-      startTimer(
-        (elapsed) => {
-          const percentage = Math.max(0, 100 - (elapsed / 7000) * 100);
-          setProgress(percentage);
-        },
-        () => handleTimeOut(start),
-        100,
-        7000
-      );
+      startGame();
     }
-
   }, [countdown, feedback, showResult, transitionMessage, showScoreTransition, songs, attempt, showInstructions]);
 
   const handleTimeOut = (start) => {
@@ -186,7 +230,6 @@ export default function NormalGame() {
     const duration = Math.round((Date.now() - startTime) / 1000);
     const isCorrect = opt === songs[currentIndex].title;
     playSoundEffect(isCorrect);
-
     if (isCorrect) {
 
       const baseScores = [0, 100, 70, 40];
@@ -253,6 +296,7 @@ export default function NormalGame() {
       try {
         await saveGameSession({
           mode: state.mode,
+          category_id: state.id,
           finished_at: new Date().toISOString(),
           attempts: attemptDurations
         }, token);
@@ -271,6 +315,12 @@ export default function NormalGame() {
     setShowResult(false);
     setCountdown(3);
     setProgress(100);
+
+    // 🆕 Pre-carga del audio de la próxima canción
+    if (songs[nextIndex]?.audio) {
+      const audio = new Audio(songs[nextIndex].audio);
+      audio.preload = "auto";
+    }
   };
 
   if (showInstructions) {

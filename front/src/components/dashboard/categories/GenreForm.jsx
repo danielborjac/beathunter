@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchGenres, createCategory, updateCategory } from '../../../api/dashboard/categories';
 import { useSelector } from 'react-redux';
-import './categoryForm.css';
+import './CategoryForm.css';
 
 export default function GenreForm({ editingCategory, onCancel, onSaved }) {
   const [genres, setGenres] = useState([]);

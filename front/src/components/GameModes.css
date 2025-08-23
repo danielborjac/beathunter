@@ -52,6 +52,24 @@
   min-height: 150px;
 }
 
+.mode-card.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.icon-disabled {
+  filter: grayscale(100%);
+}
+
+.locked-label {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.2rem;
+  color: rgb(212, 29, 29);
+  font-weight: bold;
+}
+
 @media (max-width: 768px) {
   .mode-card.normal {
     flex: 50%;
@@ -83,6 +101,14 @@
   .game-modes-container {
     margin-top: 0.1rem;
     padding: 1rem;
+  }
+
+  .locked-label {
+    display: block;
+    margin-top: 8px;
+    font-size: 1rem;
+    color: rgb(212, 29, 29);
+    font-weight: bold;
   }
 
 }

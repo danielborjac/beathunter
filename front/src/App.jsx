@@ -9,6 +9,7 @@ import NormalGame from './pages/NormalGame';
 import LeaderboardPage from './pages/LeaderboardPage';
 import CategoriesScreen from './pages/CategoriesPage';
 import DashboardRoutes from './router/DashboardRoutes';
+import AdminRoute from './components/AdminRoute';
 
 
 
@@ -28,9 +29,9 @@ function App() {
             </PrivateRoute>
           } />
           <Route path="/dashboard/*" element={
-            <PrivateRoute>
+            <AdminRoute>
               <DashboardRoutes />
-            </PrivateRoute>
+            </AdminRoute>
           } />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
         </Routes>

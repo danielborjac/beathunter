@@ -7,12 +7,12 @@
   min-width: 30%;
 }
 
-h1 {
+.categories-page h1 {
   text-align: center;
   margin-bottom: 20px;
 }
 
-h2 {
+.categories-page h2 {
   text-align: center;
   margin-bottom: 20px;
   color: black;

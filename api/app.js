@@ -11,6 +11,8 @@ const deezerRoutes = require('./routes/deezer.routes');
 const categoryRoutes = require('./routes/category.routes');
 const deezerSearchRoutes = require('./routes/deezerSearch.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
+const generalParamRoutes = require('./routes/generalParam.routes');
+
 
 const app = express();
 app.use(cors());
@@ -29,12 +31,13 @@ app.use('/api/videos', videosRoutes);
 //dashboard
 app.use('/api/dashboard', deezerSearchRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-
+app.use('/api/dashboard', generalParamRoutes);
+const PORT = process.env.PORT || 3000
 
 sequelize.authenticate()
   .then(() => {
     console.log('Conexión con base de datos exitosa.');
-    app.listen(3000, () => console.log('Servidor corriendo en http://localhost:3000'));
+    app.listen(PORT, () => console.log('Servidor corriendo en http://localhost:3000'));
   })
   .catch(err => {
     console.error('Error al conectar con la base de datos:', err);
