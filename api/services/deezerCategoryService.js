@@ -57,12 +57,29 @@ const getDeezerSongsByCategory = async ({ type, playlists, genreId, artistId, li
       }));
 
     } else if (type === 'genre') {
-      const { data } = await axios.get(`https://api.deezer.com/genre/${genreId}/artists`);
+      //const { data } = await axios.get(`https://api.deezer.com/genre/${genreId}/artists`);
+      const { data } = await axios.get(`https://api.deezer.com/genre/${genreId}/artists`
+      , {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'application/json',
+            'x-rapidapi-key': '31f7cbd9a4mshb91eb3ed80cbbc4p1e1229jsned9ff5bda1cc',
+            'x-rapidapi-host': 'deezerdevs-deezer.p.rapidapi.com'
+          },
+        });
       const allArtistIds = data.data.map(artist => artist.id);
       const randomArtistIds = shuffleArray(allArtistIds).slice(0, limit);
 
       for (const artistId of randomArtistIds) {
-        const res = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=300`);
+        //const res = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=300`);
+        const res = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=300`, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'application/json',
+            'x-rapidapi-key': '31f7cbd9a4mshb91eb3ed80cbbc4p1e1229jsned9ff5bda1cc',
+            'x-rapidapi-host': 'deezerdevs-deezer.p.rapidapi.com'
+          },
+        });
         const topTracks = res.data.data.filter(track => track.preview);
         topTracks.forEach(track => optionsPoolSet.add(sanitizeTitle(track.title)));
         
@@ -73,7 +90,15 @@ const getDeezerSongsByCategory = async ({ type, playlists, genreId, artistId, li
       }
 
     } else if (type === 'artist') {
-      const res = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=300`);
+      //const res = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=300`);
+      const res = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=300`, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'application/json',
+            'x-rapidapi-key': '31f7cbd9a4mshb91eb3ed80cbbc4p1e1229jsned9ff5bda1cc',
+            'x-rapidapi-host': 'deezerdevs-deezer.p.rapidapi.com'
+          },
+        });
       const allArtistTracks = res.data.data.filter(track => track.preview);
       allArtistTracks.forEach(track => optionsPoolSet.add(sanitizeTitle(track.title)));
       const selectedTracks = shuffleArray(allArtistTracks).slice(0, limit);

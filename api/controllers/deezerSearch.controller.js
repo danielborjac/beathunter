@@ -3,7 +3,15 @@ const axios = require('axios');
 exports.getDeezerGenres = async (req, res) => {
   try {
 
-    const { data } = await axios.get(`https://api.deezer.com/genre/`);
+    //const { data } = await axios.get(`https://api.deezer.com/genre/`);
+    const { data } = await axios.get(`https://api.deezer.com/genre/`, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'application/json',
+            'x-rapidapi-key': '31f7cbd9a4mshb91eb3ed80cbbc4p1e1229jsned9ff5bda1cc',
+            'x-rapidapi-host': 'deezerdevs-deezer.p.rapidapi.com'
+          },
+        });
 
     const genres = data.data.map(genres => ({
       id: genres.id,
@@ -27,7 +35,16 @@ exports.getDeezerArtists = async (req, res) => {
       return res.status(400).json({ error: 'Falta el parámetro search' });
     }
 
-    const { data } = await axios.get(`https://api.deezer.com/search/artist?q=${encodeURIComponent(search)}&limit=${5}`);
+    //const { data } = await axios.get(`https://api.deezer.com/search/artist?q=${encodeURIComponent(search)}&limit=${5}`);
+    const { data } = await axios.get(`https://api.deezer.com/search/artist?q=${encodeURIComponent(search)}&limit=${5}`
+    , {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'application/json',
+            'x-rapidapi-key': '31f7cbd9a4mshb91eb3ed80cbbc4p1e1229jsned9ff5bda1cc',
+            'x-rapidapi-host': 'deezerdevs-deezer.p.rapidapi.com'
+          },
+        });
 
     const artists = data.data.map(artist => ({
       id: artist.id,
@@ -51,7 +68,16 @@ exports.getDeezerPlaylists = async (req, res) => {
       return res.status(400).json({ error: 'Falta el parámetro search' });
     }
 
-    const { data } = await axios.get(`https://api.deezer.com/search/playlist?q=${encodeURIComponent(search)}&limit=${10}`);
+    //const { data } = await axios.get(`https://api.deezer.com/search/playlist?q=${encodeURIComponent(search)}&limit=${10}`);
+    const { data } = await axios.get(`https://api.deezer.com/search/playlist?q=${encodeURIComponent(search)}&limit=${10}`
+    , {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'application/json',
+            'x-rapidapi-key': '31f7cbd9a4mshb91eb3ed80cbbc4p1e1229jsned9ff5bda1cc',
+            'x-rapidapi-host': 'deezerdevs-deezer.p.rapidapi.com'
+          },
+        });
 
     const playlists = data.data.map(playlist => ({
       id: playlist.id,
@@ -75,7 +101,16 @@ exports.getDeezerTracks = async (req, res) => {
       return res.status(400).json({ error: 'Falta el parámetro search' });
     }
 
-    const { data } = await axios.get(`https://api.deezer.com/search/track?q=${encodeURIComponent(search)}&limit=${10}`);
+    //const { data } = await axios.get(`https://api.deezer.com/search/track?q=${encodeURIComponent(search)}&limit=${10}`);
+    const { data } = await axios.get(`https://api.deezer.com/search/track?q=${encodeURIComponent(search)}&limit=${10}`
+    , {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'application/json',
+            'x-rapidapi-key': '31f7cbd9a4mshb91eb3ed80cbbc4p1e1229jsned9ff5bda1cc',
+            'x-rapidapi-host': 'deezerdevs-deezer.p.rapidapi.com'
+          },
+        });
 
     const tracks = data.data.map(track => ({
       id: track.id,

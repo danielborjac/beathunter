@@ -19,7 +19,17 @@ const getDailySongs = async (number) => {
     const songs = [];
 
     for (const songId of songIds) {
-      const { data: track } = await axios.get(`https://api.deezer.com/track/${songId}`);
+      //const { data: track } = await axios.get(`https://api.deezer.com/track/${songId}`);
+      const { data: track } = await axios.get(`https://api.deezer.com/track/${songId}`
+      , {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'application/json',
+            'x-rapidapi-key': '31f7cbd9a4mshb91eb3ed80cbbc4p1e1229jsned9ff5bda1cc',
+            'x-rapidapi-host': 'deezerdevs-deezer.p.rapidapi.com'
+          },
+        });
+      
 
       // Obtener opciones externas (sin usar el mismo pool)
       const options = await getExternalTitleOptions(track, number);
@@ -51,7 +61,16 @@ async function getExternalTitleOptions(originalTrack, number) {
       throw new Error("Faltan datos del artista o título original.");
     }
 
-    const { data } = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=20`);
+    //const { data } = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=20`);
+    const { data } = await axios.get(`https://api.deezer.com/artist/${artistId}/top?limit=20`
+    , {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'application/json',
+            'x-rapidapi-key': '31f7cbd9a4mshb91eb3ed80cbbc4p1e1229jsned9ff5bda1cc',
+            'x-rapidapi-host': 'deezerdevs-deezer.p.rapidapi.com'
+          },
+        });
     const topTracks = data?.data || [];
 
     // Filtrar para eliminar la canción original y evitar duplicados por título
