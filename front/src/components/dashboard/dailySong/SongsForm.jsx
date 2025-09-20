@@ -15,15 +15,15 @@ export default function SongsForm({ editingData = null, onCancel, onSaved }) {
 
   // Si entramos en edición, popular formulario
   useEffect(() => {
-    
     if (editingData) {
-      // backend puede devolver songs (detalladas) o songs_id (solo ids)
       setDate(editingData.date_release ?? editingData.date ?? '');
-      if (Array.isArray(editingData.songs) && editingData.songs.length > 0) {
-        setSelectedSongs(editingData.songs);
+
+      if (Array.isArray(editingData.songs_info) && editingData.songs_info.length > 0) {
+        // Caso recomendado: ya viene songs_info con {id, name, artist}
+        setSelectedSongs(editingData.songs_info);
       } else if (Array.isArray(editingData.songs_id) && editingData.songs_id.length > 0) {
-        // si solo hay ids, convertimos a objetos sencillos (nombre desconocido)
-        setSelectedSongs(editingData.songs_id.map(id => ({ id })));
+        // Fallback: solo tenemos los ids → mostrar con "nombre desconocido"
+        setSelectedSongs(editingData.songs_id.map(id => ({ id, name: `Canción ${id}`, artist: '' })));
       } else {
         setSelectedSongs([]);
       }
@@ -33,15 +33,13 @@ export default function SongsForm({ editingData = null, onCancel, onSaved }) {
     }
   }, [editingData]);
 
-
-  async function total_songs(){
+  async function total_songs() {
     const songs = await getParamsByMode("daily");
     return songs[0].total_songs;   
   }
 
   async function handleAddSong(song) {
     const limit = await total_songs();
-    console.log(limit);
     if (selectedSongs.find(s => s.id === song.id)) return;
     if (selectedSongs.length >= limit) {
       setError(`Solo puedes seleccionar ${limit} canciones.`);
@@ -60,7 +58,7 @@ export default function SongsForm({ editingData = null, onCancel, onSaved }) {
     e.preventDefault();
     setError('');
     const limit = await total_songs();
-    console.log(limit);
+
     if (selectedSongs.length !== limit) {
       setError(`Debes seleccionar exactamente ${limit} canciones.`);
       return;
@@ -70,9 +68,14 @@ export default function SongsForm({ editingData = null, onCancel, onSaved }) {
       return;
     }
 
-    // Payload requerido: { songs_id: [...ids], date_release: 'YYYY-MM-DD' }
+    // Payload con IDs + INFO
     const payload = {
       songs_id: selectedSongs.map(s => s.id),
+      songs_info: selectedSongs.map(s => ({
+        id: s.id,
+        name: s.name,
+        artist: s.artist
+      })),
       date_release: date,
     };
 
@@ -106,7 +109,7 @@ export default function SongsForm({ editingData = null, onCancel, onSaved }) {
 
       <label>Buscar Canción</label>
       <SearchSelect
-        searchFunction={searchSongs}          // SearchSelect hará la búsqueda internamente
+        searchFunction={searchSongs}
         onSelect={handleAddSong}
         optionKey="id"
         optionLabel="name"
@@ -126,7 +129,10 @@ export default function SongsForm({ editingData = null, onCancel, onSaved }) {
           {loading ? (editingData ? 'Actualizando...' : 'Guardando...') : (editingData ? 'Actualizar' : 'Añadir partida del día')}
         </button>
         {editingData && (
-          <button type="button" onClick={() => { setDate(''); setSelectedSongs([]); onCancel && onCancel(); }}>
+          <button
+            type="button"
+            onClick={() => { setDate(''); setSelectedSongs([]); onCancel && onCancel(); }}
+          >
             Cancelar
           </button>
         )}

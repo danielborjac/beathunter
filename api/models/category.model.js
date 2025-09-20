@@ -23,6 +23,10 @@ const Category = sequelize.define('Category', {
     type: DataTypes.JSON,
     allowNull: true
   },
+  playlists_info: {
+    type: DataTypes.JSON,
+    allowNull: true
+  },
   genre_id: {
     type: DataTypes.STRING, 
     allowNull: true
