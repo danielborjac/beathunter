@@ -11,9 +11,12 @@ const getDeezerSongsByCategory = async ({ type, playlists, genreId, artistId, li
       const randomArtistIds = shuffleArray(playlists).slice(0, 3);
       // Recolectar canciones de múltiples playlists
       for (const playlistId of randomArtistIds) {
-        console.log(`https://api.deezer.com/playlist/${playlistId}`);
-        const { data } = await axios.get(`https://api.deezer.com/playlist/${playlistId}`);
-        console.log(data);
+        const { data } = await axios.get(`https://api.deezer.com/playlist/${playlistId}`, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'application/json',
+          },
+        });
         const tracks = data.tracks.data.filter(track => track.preview);
         allTracks.push(...tracks);
         tracks.forEach(track => optionsPoolSet.add(sanitizeTitle(track.title)));
