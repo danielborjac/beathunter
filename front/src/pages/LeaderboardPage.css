@@ -90,3 +90,9 @@
 @keyframes blink {
   50% { opacity: 0.6; }
 }
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem
+  }
+}

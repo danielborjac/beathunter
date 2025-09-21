@@ -29,7 +29,7 @@ export default function HomePage() {
         )}
         
         <BackgroundVideo onReady={() => setIsVideoReady(true)} />
-        <div className="imagen-circular-contenedor" onClick={() => navigate('/leaderboard')}><img className="leaderboard" src={trophyIcon}/></div>
+        <div className="leaderdiv" onClick={() => navigate('/leaderboard')}><img className="leaderboard" src={trophyIcon}/></div>
         <h1 className="home-title">	Que empiece el desafío musical!</h1>
         <GameModes/>
       </div>
