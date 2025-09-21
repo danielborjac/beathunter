@@ -50,6 +50,7 @@ export default function NormalGame() {
   const [startTime, setStartTime] = useState(null);
   const [showSummary, setShowSummary] = useState(false);
   const [showScoreTransition, setShowScoreTransition] = useState(false);
+  const [stopScoreTransition, setStopScoreTransition] = useState(false); 
   const [lastScore, setLastScore] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [wasCorrect, setWasCorrect] = useState(false);
@@ -285,7 +286,8 @@ export default function NormalGame() {
   };
 
   const handleNext = async () => {
-    setShowScoreTransition(true);
+    if (stopScoreTransition) setShowScoreTransition(false);
+    else setShowScoreTransition(true);
   };
 
   const handleScoreTransitionFinish = async () => {
@@ -293,6 +295,7 @@ export default function NormalGame() {
 
     const nextIndex = currentIndex + 1;
     if (nextIndex >= songs.length) {
+      setStopScoreTransition(true);
       try {
         await saveGameSession({
           mode: state.mode,
