@@ -105,7 +105,7 @@ export default function GameModes() {
     },
     {
         id:2,
-        title: 'Modo Cásico',
+        title: 'Modo Clásico',
         description: 'Múltiples opciones para desafiar tu oído musical.',
         icon: classicIcon,
         route: '/categories',

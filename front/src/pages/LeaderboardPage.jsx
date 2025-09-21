@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchLeaderboard } from '../api/leaderboard';
 import './LeaderboardPage.css';
+import trophyIcon from '/assets/icons/trophy.svg';
 
 export default function LeaderboardPage() {
   const [mode, setMode] = useState('classic');
@@ -30,7 +31,7 @@ export default function LeaderboardPage() {
 
   return (
     <div className="leaderboard-page">
-      <h1 className="title">🏆 Leaderboard</h1>
+      <h1 className="title"><img height={"40px"} src={trophyIcon}/> Leaderboard</h1>
 
       <div className="filters">
         <select value={mode} onChange={e => setMode(e.target.value)}>

@@ -21,11 +21,22 @@ export default function Header() {
   const navigate = useNavigate();
   const handleLogout = () => dispatch(logout());
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
+  useEffect(() => {
+    if (!user) {
+      setIsAdmin(false); 
+      return
+    }
+    if (user.role === 'admin') {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (user) return;
-
     const token = getTokenFromStorage();
     if (!token) {
       setLoadingAuth(false);
@@ -60,6 +71,7 @@ export default function Header() {
         ) : (
           <>
             <span className="username">👤 {user.username}</span>
+            {isAdmin && ( <button className="btn-outline" onClick={() => navigate('/dashboard')}>Dashboard</button> )}
             <button className="btn" onClick={handleLogout}>Cerrar sesión</button>
           </>
         )}
@@ -86,6 +98,8 @@ export default function Header() {
         ): (
           <div className="mobile-menu">
             <ul>
+              <li onClick={() => navigate('/leaderboard')}>Leaderboard</li>
+              {isAdmin && ( <li onClick={() => navigate('/dashboard')}>Dashboard</li> )}
               <li onClick={() => { handleLogout(); setShowMobileMenu(false); }}>Cerrar sesión</li>
             </ul>
           </div>
