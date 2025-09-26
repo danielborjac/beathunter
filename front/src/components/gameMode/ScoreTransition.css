@@ -27,6 +27,10 @@
 
 @media (max-width: 768px) {
   .score-transition-score {
-    font-size: 1.6rem;
+    font-size: 1.3rem;
   }
+  .score-transition-heading {
+    font-size: 1.8rem;
+  }
+
 }

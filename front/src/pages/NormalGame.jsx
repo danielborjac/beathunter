@@ -367,7 +367,7 @@ export default function NormalGame() {
 
       {countdown === 0 && !transitionMessage && (
         <>
-          <h2>¿Cuál es la canción?</h2>
+          <h2 className="question">¿Cuál es la canción?</h2>
           <ProgressBar percentage={progress} />
           <OptionsList
             options={currentSong.options}

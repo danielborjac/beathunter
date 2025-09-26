@@ -27,19 +27,19 @@
 
 .leaderboard {
   position: fixed; 
-  top: 100px;        
+  bottom: 80px;        
   right: 20px;      
   cursor: pointer;
   padding: 10px;
   overflow: hidden; 
-  opacity: 0.7;
+  opacity: 0.9;
 }
 
 .leaderdiv img {
   object-fit: cover;
   width: 50px;
   height: 50px;
-  background: linear-gradient(145deg, #1a1a2e, #391539);
+  background: radial-gradient(circle at top left, #0b0b0c, #15191e, #222137);
   border: 2px solid #612257;
   border-radius: 12px;
   box-shadow: 0 0 15px rgba(255, 46, 99, 0.4);
